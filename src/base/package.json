@@ -1,0 +1,20 @@
+{
+  "name": "ddatabase",
+  "version": "1.0.0",
+  "description": "",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node test/test.js"
+  },
+  "author": "Sir Eatsalot",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-ws": "^5.0.2",
+    "node-fetch": "^2.6.1",
+    "ws": "^7.5.3"
+  },
+  "main": "./src/ddatabase.js"
+}
