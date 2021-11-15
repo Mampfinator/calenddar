@@ -1,0 +1,20 @@
+{
+  "name": "calenddar",
+  "description": "Application to more efficiently DD.",
+  "version": "1.0.0",
+  "main": "src/calenddar.js",
+  "scripts": {
+    "start": "node src/calenddar.js",
+    "test": "node test/test.js"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "ddatabase": "^1.0.0",
+    "discord.js": "^13.1.0",
+    "dotenv": "^10.0.0",
+    "mongodb": "^4.1.2",
+    "node-fetch": "^2.6.5",
+    "rss-parser": "^3.12.0",
+    "winston": "^3.3.3"
+  }
+}
