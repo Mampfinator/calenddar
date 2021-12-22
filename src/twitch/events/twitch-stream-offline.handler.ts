@@ -1,17 +1,17 @@
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
-import { EventSubStreamOfflineEvent } from '@twurple/eventsub/lib';
+import { TwitchStreamOfflineEvent } from './twitch-stream-offline.event';
 import { WebeventsService } from '../../webevents/webevents.service';
 
-@EventsHandler()
+@EventsHandler(TwitchStreamOfflineEvent)
 export class TwitchStreamOfflineHandler
-    implements IEventHandler<EventSubStreamOfflineEvent>
+    implements IEventHandler<TwitchStreamOfflineEvent>
 {
 
     constructor(
         private readonly webeventsService: WebeventsService
     ) {}
 
-    handle(event: EventSubStreamOfflineEvent) {
+    handle(event: TwitchStreamOfflineEvent) {
         // TODO: implement properly. Database update, webevent generation.
         const webEvent = {test: true};
         this.webeventsService.send("webevent.twitch.live", webEvent);

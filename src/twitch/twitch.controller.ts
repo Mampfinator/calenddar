@@ -22,7 +22,6 @@ import { TwitchEventNotificationBase } from './eventsub/TwitchEventNotifications
 import { TwitchEventSubGuard } from './eventsub/eventsub.guard';
 import { EventBus } from '@nestjs/cqrs';
 import { TwitchStreamLiveEvent } from './events/twitch-stream-live.event';
-import { EventSubStreamOfflineEvent, EventSubStreamOnlineEvent } from '@twurple/eventsub/lib';
 import { TwitchStreamOfflineEvent } from './events/twitch-stream-offline.event';
 
 @Controller({ path: 'twitch' })
@@ -92,10 +91,10 @@ export class TwitchController {
         let event;
         switch (notification.type) {
             case "stream.online": 
-                event = new TwitchStreamLiveEvent(notification as unknown as EventSubStreamOnlineEvent);
+                event = new TwitchStreamLiveEvent(notification);
                 break;
             case "stream.offline": 
-                event = new TwitchStreamOfflineEvent(notification as unknown as EventSubStreamOfflineEvent); 
+                event = new TwitchStreamOfflineEvent(notification); 
         }
 
         this.eventBus.publish(event);
