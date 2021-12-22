@@ -1,5 +1,10 @@
-import { Controller, Get, Logger, Next, NotFoundException, Param, Post, Req, Res } from "@nestjs/common";
-import { HttpAdapterHost } from "@nestjs/core";
+import { 
+    Controller, 
+    Get, 
+    Logger, 
+    NotFoundException, 
+    Param 
+} from "@nestjs/common";
 import { ValidateObjectIdPipe } from "../util";
 import { VTuberEntityRepository } from "../vtubers/db/vtuber-entity.repository";
 import { YouTubeEventSubService } from "./eventsub/youtube-eventsub.service";
