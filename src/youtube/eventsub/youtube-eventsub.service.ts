@@ -3,8 +3,7 @@ import { ConfigService } from "@nestjs/config";
 import { EventBus } from "@nestjs/cqrs";
 import { APIOptions } from "../../config/config";
 import { OnEvent } from "@nestjs/event-emitter";
-import axios, { AxiosRequestConfig } from "axios";
-import { buildRequest } from "../../util";
+import axios, { AxiosResponse } from "axios";
 
 interface IPubSubHubbubMessage {
     topic: string;
@@ -33,29 +32,33 @@ export class YouTubeEventSubService {
         this._callbackUrl = `https://${this.configService.get<APIOptions>("api").host}/youtube/eventsub`;
     }
 
-    private _buildSubscriptionRequest(mode: "subscribe" | "unsubscribe", id: string): AxiosRequestConfig {
+    private async _doSubscription(mode: "subscribe" | "unsubscribe", id: string): Promise<AxiosResponse> {
         const secret = this.configService.get<string>("YOUTUBE_WEBHOOK_SECRET");
         const topic = `https://www.youtube.com/xml/feeds/videos.xml?channel_id=${id}`;
-        return {
+        const callbackUrl = this._callbackUrl //+ encodeURIComponent(`&topic=${topic}&hub=${this.hub}`);
+        
+        return axios({
             method: "POST",
             baseURL: this.hub,
             params: {
-                "hub.callback":  buildRequest(this._callbackUrl, {topic, hub: this.hub}),
-                "hub.mode": "subscribe",
-                "hub.topic": topic,
-                "hub.verify": "async"
+                'hub.mode': mode,
+                'hub.topic': topic,
+                'hub.verify': 'async',
+                'hub.secret': secret,
+                'hub.callback': callbackUrl
             }
-        }
+        })
     }
 
     async subscribe(id: string) {
-        const response = await axios(this._buildSubscriptionRequest("subscribe", id));
-        if (response.status !== 202 && response.status !== 204) throw new Error(`Received status code ${response.status} (${response.statusText}) back from PubSubHubbub hub.`);
+        const response = await this._doSubscription('subscribe', id);
+        if (![200, 202, 204].includes(response.status)) throw new Error(`Received status code ${response.status} (${response.statusText}) back from PubSubHubbub hub.`);
+
     }
 
     async unsubscribe(id: string) {
-        const response = await axios(this._buildSubscriptionRequest("unsubscribe", id));
-        if (response.status !== 202 && response.status !== 204) throw new Error(`Unexpected status ${response.status} (${response.statusText})`); 
+        const response = await this._doSubscription("unsubscribe", id);
+        if (![200, 202, 204].includes(response.status)) throw new Error(`Unexpected status ${response.status} (${response.statusText})`); 
     }
 
     @OnEvent("youtube.eventsub.subscribe")
