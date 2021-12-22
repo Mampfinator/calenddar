@@ -30,7 +30,7 @@ export class YouTubeModule implements OnApplicationBootstrap {
     ) {}
     
     async onApplicationBootstrap() {
-        /*const counter = {
+        const counter = {
             value: 0,
             inc() {
                 this.value += 1;
@@ -49,8 +49,9 @@ export class YouTubeModule implements OnApplicationBootstrap {
         }
 
         const i = setInterval(() => {
+            // debug for sanity.
             this.logger.debug(`Requests processed so far: ${counter.value}`);
             if (counter.value == ids.length) clearInterval(i);
-        }, 1500);*/
+        }, 1500);
     }
 }
