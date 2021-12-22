@@ -30,12 +30,12 @@ export class TwitchModule implements OnApplicationBootstrap {
 
         const promises = [];
 
-        /*for (const userId of userIds) {
+        for (const userId of userIds) {
             promises.push(
                 this.twitchEventsubService.subscribe(userId), 
                 this.twitchService.syncUserState(userId)
             );
-        }*/
+        }
 
         await Promise.all(promises);
     }
