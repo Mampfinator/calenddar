@@ -41,3 +41,4 @@ lerna-debug.log*
 # config
 src/config/*
 !src/config/config.ts
+!src/config/config.example.yaml

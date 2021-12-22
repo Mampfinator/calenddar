@@ -1,5 +1,0 @@
-api: 
-  host: 'api.calenddar.de'
-  port: 3003
-
-log_level: [ "warn", "error", "log" ]
