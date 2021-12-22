@@ -1,0 +1,5 @@
+api:
+  host: "your-domain.edu"
+  port: 3000
+
+logLevel: ["log", "debug", "warn", "error"]
