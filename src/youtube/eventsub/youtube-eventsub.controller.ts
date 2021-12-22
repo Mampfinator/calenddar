@@ -1,4 +1,16 @@
-import { BadRequestException, Body, Controller, ForbiddenException, Get, Headers, HttpCode, HttpException, Post, Query } from "@nestjs/common";
+import { 
+    BadRequestException, 
+    Body, 
+    Controller, 
+    ForbiddenException, 
+    Get, 
+    Headers, 
+    HttpCode, 
+    HttpException, 
+    Post, 
+    Query, 
+    Logger 
+} from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { EventBus } from "@nestjs/cqrs";
 import { EventEmitter2 } from "@nestjs/event-emitter";
@@ -15,6 +27,8 @@ class InvalidSignatureException extends HttpException {
 
 @Controller("youtube")
 export class YouTubeEventSubController {
+    private readonly logger = new Logger(YouTubeEventSubController.name);
+
     constructor(
         private readonly configService: ConfigService,
         private readonly eventEmitter: EventEmitter2,
@@ -68,7 +82,10 @@ export class YouTubeEventSubController {
             try {
                 computedSignature = hmac.update(Buffer.from(rawBody, "utf-8")).digest("hex");
             } catch {
-                throw new ForbiddenException();
+                if (secret === hubSignature) {
+                    computedSignature = secret;
+                    this.logger.warn(`Change POST /youtube/eventsub to simply compare signature with secret!`);
+                } else throw new ForbiddenException();
             }
             if (computedSignature !== signature) throw new InvalidSignatureException(); // per spec, return 202 a non-matching signature was computed.
         }
