@@ -23,8 +23,6 @@ export class YouTubeEventSubFeedHandler implements IEventHandler<YouTubeEventSub
 
     async handle(event: YouTubeEventSubFeedEvent) {
         this.logger.debug(`Got YouTube PubSub event for ${event.channelId} ([${event.videoId}]: ${event.title}). See log file for more info.`);
-        await _logToFile(event.raw, `youtube-eventsub.log`, YouTubeEventSubFeedHandler.name);
-
         const {videoId} = event;
 
         if (await this.streamRepository.findOneByQuery({streamId: videoId}).catch(() => {/* */})) return;
