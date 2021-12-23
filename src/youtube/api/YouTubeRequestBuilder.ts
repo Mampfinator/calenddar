@@ -4,11 +4,9 @@ export class YouTubeRequestBuilder {
     private headers: {[key: string]: string} = {};
     private parameters: {[key: string]: string | number | boolean} = {};
     private baseUrl: string;
-    private method: "GET";
-    private key: string;
 
     setApiKey(key: string) {
-        this.key = key;
+        this.setParameter("key", key);
         return this;
     }
 
@@ -38,10 +36,6 @@ export class YouTubeRequestBuilder {
     }
 
     async send(attachKey?: boolean, resolveFull?: boolean) {
-        if (this.key && (attachKey ?? true)) this.setParameter("key", this.key);
-
-        console.log(this.parameters);
-
         const res = await axios({
             baseURL: this.baseUrl,
             headers: this.headers, 
