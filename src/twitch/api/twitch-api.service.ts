@@ -51,6 +51,7 @@ export class TwitchAPIService implements OnModuleInit, OnModuleDestroy {
                 .setParameter("client_id", this.clientId)
                 .setParameter("grant_type", "refresh_token")
                 .setParameter("client_secret", this.secret)
+                .setParameter("refresh_token", this._refreshToken)
                 .send();
 
             this._refreshToken = refresh_token;
