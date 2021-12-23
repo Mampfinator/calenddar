@@ -1,7 +1,8 @@
 import { 
     MiddlewareConsumer, 
     Module, 
-    NestModule 
+    NestModule, 
+    OnApplicationBootstrap
 } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { VTubersModule } from './vtubers/vtubers.module';
@@ -19,6 +20,7 @@ import { AppController } from './app.controller';
 import { RawBodyMiddleware } from './middleware/raw-body.middleware';
 import { JSONBodyMiddleware } from './middleware/json-body.middleware';
 import { WebeventsModule } from './webevents/webevents.module';
+import { startAllTimers } from './decorators/dynamic-timer.decorator';
 
 @Module({
     imports: [
@@ -57,7 +59,7 @@ import { WebeventsModule } from './webevents/webevents.module';
     providers: [ AppService ],
     controllers: [ AppController ]
 })
-export class AppModule implements NestModule {
+export class AppModule implements NestModule, OnApplicationBootstrap {
     public configure(consumer: MiddlewareConsumer) {
         consumer
         .apply(RawBodyMiddleware)
@@ -66,5 +68,9 @@ export class AppModule implements NestModule {
         .apply(JSONBodyMiddleware)
         .exclude("/graphql")
         .forRoutes("*")
+    }
+
+    async onApplicationBootstrap() {
+        await startAllTimers();
     }
 }
