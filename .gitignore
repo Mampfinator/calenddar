@@ -42,3 +42,6 @@ lerna-debug.log*
 src/config/*
 !src/config/config.ts
 !src/config/config.example.yaml
+
+# pm2
+ecosystem.config.js
