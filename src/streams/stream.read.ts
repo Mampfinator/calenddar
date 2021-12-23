@@ -1,5 +1,4 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { StreamSchema } from './db/stream.schema';
 
 export enum VideoStatusEnum {
     Live,
@@ -39,7 +38,7 @@ export class Stream {
         nullable: true,
         description: "The stream's status.",
     })
-    protected status?: VideoStatusEnum;
+    readonly status?: VideoStatusEnum;
 
     constructor(
         id: string,

@@ -1,6 +1,8 @@
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import { CqrsModule } from "@nestjs/cqrs";
 import { EventEmitterModule } from "@nestjs/event-emitter";
+import { StreamsModule } from "../../streams/streams.module";
+import { YouTubeAPIModule } from "../api/youtube-api.module";
 import { YouTubeEventSubFeedHandler } from "./events/youtube-eventsub-feed.handler";
 import { YouTubeEventSubController } from "./youtube-eventsub.controller";
 import { YouTubeEventSubService } from "./youtube-eventsub.service";
@@ -8,7 +10,9 @@ import { YouTubeEventSubService } from "./youtube-eventsub.service";
 @Module({
     imports: [
         CqrsModule, 
-        EventEmitterModule
+        EventEmitterModule,
+        YouTubeAPIModule,
+        forwardRef(() => StreamsModule)
     ],
     providers: [
         YouTubeEventSubService, 

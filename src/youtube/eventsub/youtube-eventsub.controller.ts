@@ -59,7 +59,7 @@ export class YouTubeEventSubController {
 
     @Post("eventsub")
     @HttpCode(204)
-    onPostRequest(
+    async onPostRequest(
         @Body() body,
         @RawBody() rawBody,
         @Headers("x-hub-signature") hubSignature: string,
@@ -91,7 +91,7 @@ export class YouTubeEventSubController {
         }
 
         this.eventBus.publish(
-            new YouTubeEventSubFeedEvent(rawBody)
+            await new YouTubeEventSubFeedEvent(rawBody).parse()
         );
     }
 }

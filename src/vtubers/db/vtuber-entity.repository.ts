@@ -18,4 +18,16 @@ export class VTuberEntityRepository extends BaseEntityRepository<
     ) {
         super(vtuberModel, vtuberSchemaFactory);
     }
+
+    async findByYoutubeId(id: string): Promise<VTuberRoot[]> {
+        return this.find({
+            youtubeId: id
+        });
+    }
+
+    async findByTwitchId(id: string): Promise<VTuberRoot[]> {
+        return this.find({
+            twitchId: id
+        });
+    }
 }

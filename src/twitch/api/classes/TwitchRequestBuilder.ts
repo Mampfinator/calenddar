@@ -60,6 +60,6 @@ export class TwitchRequestBuilder {
             data: this.body ?? null
         });
 
-        return resolveFull ? res : res.data;
+        return !resolveFull ? res.data : res;
     }
 }
