@@ -90,8 +90,15 @@ export class YouTubeEventSubController {
             if (computedSignature !== signature) throw new InvalidSignatureException(); // per spec, return 202 a non-matching signature was computed.
         }
 
-        this.eventBus.publish(
-            await new YouTubeEventSubFeedEvent(rawBody).parse()
-        );
+        try {
+            this.eventBus.publish(
+                await new YouTubeEventSubFeedEvent(rawBody).parse()
+            );
+        } catch (error) {
+            // basically, when videos are being deleted, YouTube sends out an XML document like <at:deleted-entry> without the <yt:videoId> or <yt:channelId> fields, which trips up the RSS Parser.
+            // catch those errors and, for the time being, silently ignore them.
+            if (!(error instanceof TypeError)) throw error;
+        }
+
     }
 }
