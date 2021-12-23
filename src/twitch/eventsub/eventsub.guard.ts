@@ -52,9 +52,10 @@ export class TwitchEventSubGuard implements CanActivate {
         // lastly, verify that the message is actually from Twitch.
         const [algorithm] = signature.split("=");
         const computedSignature = `${algorithm}=${createHmac("sha256", secret).update(eventId + timestamp + req["rawBody"]).digest("hex")}`;
-        this.logger.debug(`Message signatures:\nComputed: ${computedSignature}\nExpected: ${signature}`);
+        
         
         if (computedSignature !== signature) {
+            this.logger.warn(`Computed non-match message signature:\nComputed: ${computedSignature}\nExpected: ${signature}`);
             throw new BadRequestException();
         }
 
