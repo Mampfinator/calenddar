@@ -25,3 +25,5 @@ ${content}
 export function isValidDate(date: Date): boolean {
     return !isNaN(date.valueOf());
 }
+
+export {DynamicTimer} from "./DynamicTimer";
