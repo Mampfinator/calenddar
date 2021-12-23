@@ -29,7 +29,6 @@ export class TwitchEventSubGuard implements CanActivate {
 
         const secret = this.configService.get<string>("TWITCH_WEBHOOK_SECRET");
         const req: ExpressRequest = context.switchToHttp().getRequest();
-        const validEvents = this.reflector.get<TwitchEvent[], string>("events", context.getHandler());
         
         const timestamp = req.header("Twitch-Eventsub-Message-Timestamp");
         const eventId = req.header("Twitch-Eventsub-Message-Id");
@@ -68,10 +67,6 @@ export class TwitchEventSubGuard implements CanActivate {
         req["messageType"] = type;
 
         const eventType =  req.body.subscription.type;
-        /*if (!(validEvents?.includes(eventType) ?? true)) {
-            return false;
-        }*/
-        
         req["eventType"] = eventType;
         return true;
     }
