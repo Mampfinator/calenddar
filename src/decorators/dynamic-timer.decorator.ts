@@ -1,4 +1,4 @@
-import { DynamicTimer as _DynamicTimer } from "src/util";
+import { DynamicTimer as _DynamicTimer } from "../util";
 const registry = new WeakMap<object, _DynamicTimer>();
 let timers = new Set<_DynamicTimer>();
 
