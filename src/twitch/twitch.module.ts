@@ -1,6 +1,5 @@
 import { forwardRef, Module, OnApplicationBootstrap } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
-import { WebeventsModule } from '../webevents/webevents.module';
 import { StreamsModule } from '../streams/streams.module';
 import { VTubersModule } from '../vtubers/vtubers.module';
 import { TwitchEventHandlers } from './events';
@@ -13,7 +12,7 @@ import { TwitchEventSubModule } from './eventsub/twitch-eventsub.module';
 import { TwitchAPIService } from './api/twitch-api.service';
 
 @Module({
-    imports: [forwardRef(() => StreamsModule), forwardRef(() => VTubersModule), CqrsModule, WebeventsModule, forwardRef(() => TwitchAPIModule), forwardRef(() => TwitchEventSubModule)],
+    imports: [forwardRef(() => StreamsModule), forwardRef(() => VTubersModule), CqrsModule, forwardRef(() => TwitchAPIModule), forwardRef(() => TwitchEventSubModule)],
     providers: [TwitchService, TwitchStreamFactory, ...TwitchEventHandlers],
     controllers: [TwitchController],
     exports: [TwitchService, TwitchEventSubModule, TwitchAPIModule],

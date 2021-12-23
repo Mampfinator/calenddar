@@ -5,11 +5,9 @@ import {
 } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { VTubersModule } from './vtubers/vtubers.module';
-import { WebhooksModule } from './webhooks/webhooks.module';
 import { YouTubeModule } from './youtube/youtube.module';
 import { TwitchModule } from './twitch/twitch.module';
 import { StreamsModule } from './streams/streams.module';
-import { WebsocketModule } from './websocket/websocket.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { GraphQLModule } from '@nestjs/graphql';
 import { videoStatusResolver } from './streams/stream.read';
@@ -20,6 +18,7 @@ import config from './config/config';
 import { AppController } from './app.controller';
 import { RawBodyMiddleware } from './middleware/raw-body.middleware';
 import { JSONBodyMiddleware } from './middleware/json-body.middleware';
+import { WebeventsModule } from './webevents/webevents.module';
 
 @Module({
     imports: [
@@ -50,11 +49,10 @@ import { JSONBodyMiddleware } from './middleware/json-body.middleware';
             },
         }),
         VTubersModule,
-        WebhooksModule,
         YouTubeModule,
         TwitchModule,
         StreamsModule,
-        WebsocketModule,
+        WebeventsModule
     ],
     providers: [ AppService ],
     controllers: [ AppController ]
@@ -63,8 +61,10 @@ export class AppModule implements NestModule {
     public configure(consumer: MiddlewareConsumer) {
         consumer
         .apply(RawBodyMiddleware)
+        .exclude("/graphql")
         .forRoutes("*")
         .apply(JSONBodyMiddleware)
+        .exclude("/graphql")
         .forRoutes("*")
     }
 }

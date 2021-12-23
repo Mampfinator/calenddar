@@ -17,9 +17,4 @@ export class WebsocketService {
             socket.send(message);
         }
     }
-
-    @OnEvent('webevent.**')
-    async handleWebevent<T extends Webevent>(payload: T) {
-        this.broadcast(new WebsocketBroadcast<T>(payload));
-    }
 }

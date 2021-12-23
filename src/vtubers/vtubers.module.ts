@@ -14,13 +14,11 @@ import { VTuberResolver } from './vtuber.resolvers';
 import { VTuberEventHandlers } from './events';
 import { VTuberCommandHandlers } from './commands';
 import { VTuberQueryHandlers } from './queries';
-import { WebeventsModule } from '../webevents/webevents.module';
 import { StreamsModule } from '../streams/streams.module';
 
 @Module({
     imports: [
         forwardRef(() => StreamsModule),
-        WebeventsModule,
         CqrsModule,
         MongooseModule.forFeatureAsync([
             {
