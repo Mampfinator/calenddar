@@ -36,44 +36,14 @@ export class YouTubeEventSubFeedHandler
             return;
 
         const video = await this.apiService.getVideoById(videoId);
-        const { snippet, liveStreamingDetails } = video;
-
-        // general details
-        const { channelId, title, description, liveBroadcastContent } = snippet;
-
-        if (liveStreamingDetails) {
-            // figure out times
-            const { scheduledStartTime, actualStartTime, actualEndTime } =
-                liveStreamingDetails;
-
-            var startedAt = new Date(actualStartTime);
-            var scheduledFor = new Date(scheduledStartTime);
-            var endedAt = new Date(actualEndTime);
-
-            startedAt = isValidDate(startedAt) ? startedAt : undefined;
-            scheduledFor = isValidDate(scheduledFor) ? scheduledFor : undefined;
-            endedAt = isValidDate(endedAt) ? endedAt : undefined;
-
-            var status: VideoStatusEnum;
-            switch (liveBroadcastContent) {
-                case 'live':
-                    status = VideoStatusEnum.Live;
-                    break;
-                case 'none':
-                    status = VideoStatusEnum.Offline;
-                    break;
-                case 'upcoming':
-                    status = VideoStatusEnum.Upcoming;
-                    break;
-            }
-        }
+        const {channelId, title, status, description, startedAt, endedAt, scheduledFor} = this.apiService.extractInfoFromApiVideo(video);
 
         const dbVideo = await this.streamFactory.create(
             videoId,
             channelId,
             'youtube',
             title,
-            status ?? VideoStatusEnum.Offline,
+            status,
             description,
             startedAt, // TODO: figure out if there's a "start-time" equivalent for uploads
             endedAt,
