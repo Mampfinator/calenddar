@@ -68,7 +68,7 @@ export class YouTubeModule
             if (counter.value == ids.length) clearInterval(i);
         }, 1500);
 
-        //TODO: await this.youtubeService.fetchNewVideos();
+        await this.youtubeService.syncFeedVideoState();
         await this.youtubeService.syncVideoStates(false);
 
         this._videoTimer = new DynamicTimer(

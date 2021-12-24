@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
+import { StreamFactory } from '../streams/stream.factory';
 import { StreamEntityRepository } from '../streams/db/stream-entity.repository';
 import { VTuberEntityRepository } from '../vtubers/db/vtuber-entity.repository';
 import { YouTubeAPIService } from './api/youtube-api.service';
-import { YouTubeEventSubService } from './eventsub/youtube-eventsub.service';
 import { YouTubeEventFactory } from './youtube-event.factory';
 
 @Injectable()
@@ -11,9 +11,9 @@ export class YouTubeService {
     public readonly logger = new Logger(YouTubeService.name);
     constructor(
         public readonly streamRepository: StreamEntityRepository,
+        private readonly streamFactory: StreamFactory,
         private readonly vtuberRepository: VTuberEntityRepository,
         public readonly apiService: YouTubeAPIService,
-        private readonly eventsubService: YouTubeEventSubService,
         private readonly youtubeEventFactory: YouTubeEventFactory,
         private readonly eventBus: EventBus,
     ) {}
@@ -67,5 +67,41 @@ export class YouTubeService {
         await Promise.all(videosUpdating);
 
         return videosUpdating.length;
+    }
+
+    async syncFeedVideoState() {
+        const channelIds = (await this.vtuberRepository.findByQuery({youtubeId: {$exists: true}})).map(v => v.getYoutubeId());
+
+        const promises = [];
+
+        for (const id of channelIds) {
+            const feedVideoIds = (await this.apiService.fetchRecentVideosFromFeed(id)).map(v => v.videoId);
+            const apiVideos = await this.apiService.getVideosByIds(...feedVideoIds);
+
+            for (const video of apiVideos) {
+                const dbVideo = await this.streamRepository.findByStreamId(video.id);
+
+                if (!dbVideo) {
+                    const {streamId, channelId, title, status, description, startedAt, endedAt, scheduledFor} = this.apiService.extractInfoFromApiVideo(video);
+                    promises.push(this.streamFactory.create(
+                        streamId, 
+                        channelId, 
+                        "youtube",
+                        title,
+                        status,
+                        description, 
+                        startedAt, 
+                        endedAt, 
+                        scheduledFor
+                    ))
+                } else {
+                    const updates = dbVideo.updateFromYouTubeApi(video);
+                    if (updates.size > 0) promises.push(this.streamRepository.findOneAndReplaceById(dbVideo._id, dbVideo));
+                }
+
+            }
+        }
+
+        await Promise.all(promises);
     }
 }

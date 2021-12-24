@@ -1,8 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import Parser from 'rss-parser';
 import { Videos } from './constants';
 import { YouTubeV3Video } from './interfaces/V3Video';
 import { YouTubeRequestBuilder } from './YouTubeRequestBuilder';
+import { isValidDate } from '../../util';
+import { VideoStatusEnum } from '../../streams/stream.read';
 
 @Injectable()
 export class YouTubeAPIService {
@@ -59,5 +62,59 @@ export class YouTubeAPIService {
         }
 
         return items;
+    }
+
+    async fetchRecentVideosFromFeed(channelId: string) {
+        const parser = new Parser({customFields: {item: [["yt:videoId", "videoId"], ["yt:channelId", "channelId"]]}});
+        const {items} = await parser.parseURL(`https://youtube.com/feeds/videos.xml?channel_id=${channelId}`);
+        return items;
+    }
+
+
+    extractInfoFromApiVideo(video: YouTubeV3Video) {
+        const {id: streamId} = video;
+        const { snippet, liveStreamingDetails } = video;
+        // general details
+        const { channelId, title, description, liveBroadcastContent } = snippet;
+
+        if (liveStreamingDetails) {
+            // figure out times
+            const { scheduledStartTime, actualStartTime, actualEndTime } =
+                liveStreamingDetails;
+
+            var startedAt = new Date(actualStartTime);
+            var scheduledFor = new Date(scheduledStartTime);
+            var endedAt = new Date(actualEndTime);
+
+            startedAt = isValidDate(startedAt) ? startedAt : undefined;
+            scheduledFor = isValidDate(scheduledFor) ? scheduledFor : undefined;
+            endedAt = isValidDate(endedAt) ? endedAt : undefined;
+
+            var status: VideoStatusEnum;
+            switch (liveBroadcastContent) {
+                case 'live':
+                    status = VideoStatusEnum.Live;
+                    break;
+                case 'none':
+                    status = VideoStatusEnum.Offline;
+                    break;
+                case 'upcoming':
+                    status = VideoStatusEnum.Upcoming;
+                    break;
+                default: 
+                    status = VideoStatusEnum.Offline;
+            }
+        }
+
+        return {
+            streamId,
+            channelId,
+            title, 
+            description,
+            startedAt,
+            scheduledFor,
+            endedAt,
+            status
+        }
     }
 }
