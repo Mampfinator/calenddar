@@ -32,8 +32,6 @@ export class TwitchEventSubGuard implements CanActivate {
     ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        this.logger.debug(`Got message from Twitch.`);
-
         const secret = this.configService.get<string>('TWITCH_WEBHOOK_SECRET');
         const req: ExpressRequest = context.switchToHttp().getRequest();
 

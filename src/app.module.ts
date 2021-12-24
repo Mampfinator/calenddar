@@ -1,4 +1,5 @@
 import {
+    Logger,
     MiddlewareConsumer,
     Module,
     NestModule,
@@ -15,7 +16,7 @@ import { videoStatusResolver } from './streams/stream.read';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import config from './config/config';
+import config, { APIOptions } from './config/config';
 import { AppController } from './app.controller';
 import { RawBodyMiddleware } from './middleware/raw-body.middleware';
 import { JSONBodyMiddleware } from './middleware/json-body.middleware';
@@ -58,7 +59,12 @@ import { WebeventsModule } from './webevents/webevents.module';
     providers: [AppService],
     controllers: [AppController],
 })
-export class AppModule implements NestModule {
+export class AppModule implements NestModule, OnApplicationBootstrap {
+    private readonly logger = new Logger(AppModule.name);
+    constructor(
+        private readonly configService: ConfigService
+    ) {}
+    
     public configure(consumer: MiddlewareConsumer) {
         consumer
             .apply(RawBodyMiddleware)
@@ -67,5 +73,10 @@ export class AppModule implements NestModule {
             .apply(JSONBodyMiddleware)
             .exclude('/graphql')
             .forRoutes('*');
+    }
+
+    public onApplicationBootstrap() {
+        const {host, port} = this.configService.get<APIOptions>("api");
+        this.logger.log(`Successfully started. Listening on ${host}:${port}.`);
     }
 }

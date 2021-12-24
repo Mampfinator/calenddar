@@ -33,10 +33,6 @@ export class YouTubeAPIService {
             idBatches.push(ids.slice(i, i + 50));
         }
 
-        this.logger.debug(
-            `[getVideosByIds] Batches: ${idBatches.length}, total videos: ${ids.length}.`,
-        );
-
         const items: YouTubeV3Video[] = [];
         for (const idBatch of idBatches) {
             const batchItems: YouTubeV3Video[] = (
@@ -51,13 +47,15 @@ export class YouTubeAPIService {
             // see if any videos we wanted to request are missing from the response, and add a minimum amount of data to indicate that to the return.
             const idSet = new Set<string>(idBatch);
             for (const item of batchItems) idSet.delete(item.id);
-            for (const id of idSet)
+            for (const id of idSet) {
+                this.logger.debug(`Video with ID ${id} will be marked as deleted.`);
                 batchItems.push({
                     deleted: true,
                     id,
                 });
+            }
 
-            items.concat(batchItems);
+            items.push(...batchItems);
         }
 
         return items;

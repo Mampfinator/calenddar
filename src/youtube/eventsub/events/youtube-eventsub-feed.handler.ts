@@ -24,9 +24,6 @@ export class YouTubeEventSubFeedHandler
     ) {}
 
     async handle(event: YouTubeEventSubFeedEvent) {
-        this.logger.debug(
-            `Got YouTube PubSub event for ${event.channelId} ([${event.videoId}]: ${event.title}). See log file for more info.`,
-        );
         const { videoId } = event;
 
         if (

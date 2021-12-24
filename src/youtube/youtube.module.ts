@@ -17,6 +17,7 @@ import { YouTubeController } from './youtube.controller';
 import { YouTubeService } from './youtube.service';
 import { ConfigService } from '@nestjs/config';
 import { YouTubeOptions } from 'src/config/config';
+import { YouTubeEventFactory } from './youtube-event.factory';
 
 @Module({
     imports: [
@@ -26,9 +27,9 @@ import { YouTubeOptions } from 'src/config/config';
         YouTubeAPIModule,
         YouTubeEventSubModule,
     ],
-    providers: [YouTubeService],
+    providers: [YouTubeService, YouTubeEventFactory],
     controllers: [YouTubeController],
-    exports: [YouTubeService],
+    exports: [YouTubeService, YouTubeEventFactory],
 })
 export class YouTubeModule
     implements OnApplicationBootstrap, OnApplicationShutdown
@@ -56,7 +57,6 @@ export class YouTubeModule
             const id = ids[i];
 
             setTimeout(async () => {
-                this.logger.debug(`Doing PubSubHubbub subscription for ${id}.`);
                 await this.youtubeEventsubService.subscribe(id);
                 counter.inc();
             }, 100 * i);
@@ -64,9 +64,12 @@ export class YouTubeModule
 
         const i = setInterval(() => {
             // debug for sanity.
-            this.logger.debug(`Requests processed so far: ${counter.value}`);
+            this.logger.debug(`YouTube PubSub requests processed so far: ${counter.value}/${ids.length}.`);
             if (counter.value == ids.length) clearInterval(i);
         }, 1500);
+
+        //TODO: await this.youtubeService.fetchNewVideos();
+        await this.youtubeService.syncVideoStates(false);
 
         this._videoTimer = new DynamicTimer(
             async () => {
@@ -81,10 +84,6 @@ export class YouTubeModule
                 const interval =
                     ((24 * 60 * 60 * 1000) / (quotaLimit * usableQuota)) *
                     Math.ceil(amount / 50);
-
-                this.logger.debug(
-                    `VideoTimer: found ${amount} videos. Calculated interval of ${interval}ms.`,
-                );
                 return interval;
             },
             () => this.youtubeService.syncVideoStates(),

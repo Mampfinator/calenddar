@@ -20,7 +20,6 @@ export class DynamicTimer {
                 this,
                 callbackArgs ?? [],
             );
-            console.log(`Interval: ${interval}`);
             this._timeoutId = setTimeout(this._internalCallback, interval);
         };
     }

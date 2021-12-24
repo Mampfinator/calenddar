@@ -21,6 +21,7 @@ export class WebeventsService {
         platform: string,
         payload: object,
     ) {
+        this.logger.debug(`Sending event "${event}" (platform: ${platform}, vtubers: [${vtuberIds.join(", ")}]) to all clients.`);
         const webevent = {
             event,
             vtubers: vtuberIds,

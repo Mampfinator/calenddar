@@ -1,8 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { EventBus } from '@nestjs/cqrs';
 import { StreamEntityRepository } from '../streams/db/stream-entity.repository';
 import { VTuberEntityRepository } from '../vtubers/db/vtuber-entity.repository';
 import { YouTubeAPIService } from './api/youtube-api.service';
 import { YouTubeEventSubService } from './eventsub/youtube-eventsub.service';
+import { YouTubeEventFactory } from './youtube-event.factory';
 
 @Injectable()
 export class YouTubeService {
@@ -12,6 +14,8 @@ export class YouTubeService {
         private readonly vtuberRepository: VTuberEntityRepository,
         public readonly apiService: YouTubeAPIService,
         private readonly eventsubService: YouTubeEventSubService,
+        private readonly youtubeEventFactory: YouTubeEventFactory,
+        private readonly eventBus: EventBus,
     ) {}
 
     async getAllChannelIds(): Promise<string[]> {
@@ -23,7 +27,7 @@ export class YouTubeService {
     }
 
     // TODO: split up live & upcoming checking into seperate methods; mainly to optimize quota usage.
-    async syncVideoStates() {
+    async syncVideoStates(doEvents?: boolean) {
         const videos = await this.streamRepository.findNonOffline('youtube');
         const apiVideos = new Map(
             (
@@ -33,10 +37,35 @@ export class YouTubeService {
             ).map((video) => [video.id, video]),
         ); // Map id => apiVideo
 
+        const videosUpdating = [];
+
         for (const video of videos) {
             const updates = video.updateFromYouTubeApi(
                 apiVideos.get(video.getId()),
             );
+            if (updates.size > 0)
+                videosUpdating.push(
+                    this.streamRepository.findOneAndReplaceById(
+                        video._id,
+                        video,
+                    ),
+                );
+            if (!(doEvents ?? true)) continue;
+
+            for (const [updateName, { oldValue, newValue }] of updates) {
+                const event = this.youtubeEventFactory.createEventFromUpdate(
+                    video,
+                    updateName,
+                    oldValue,
+                    newValue,
+                );
+                if (event) this.eventBus.publish(event);
+            }
         }
+
+        // wait for all videos to have updated.
+        await Promise.all(videosUpdating);
+
+        return videosUpdating.length;
     }
 }
