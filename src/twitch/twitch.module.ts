@@ -31,7 +31,7 @@ export class TwitchModule implements OnApplicationBootstrap {
     ) {}
 
     async onApplicationBootstrap() {
-        /*const userIds = await this.twitchService.getAllUserIds();
+        const userIds = await this.twitchService.getAllUserIds();
 
         const promises = [];
 
@@ -42,6 +42,6 @@ export class TwitchModule implements OnApplicationBootstrap {
             );
         }
 
-        await Promise.all(promises);*/
+        await Promise.all(promises);
     }
 }
