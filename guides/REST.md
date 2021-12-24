@@ -6,14 +6,14 @@ The API is structured into a handful of different categories of endpoints: VTube
 
 ### VTubers
 `VTuber` resource:
-```json
+```typescript
 {
-    "id": string,               # Unique ID of this VTuber
-    "name": string,             # The VTuber's English name
-    "originalName"?: string,    # The VTuber's name in original/ other common script 
-    "youtubeId"?: string,       # the VTuber's YouTube channel ID (no sub-channels as of now)
-    "twitchId"?: string,        # the VTuber's Twitch channel ID (no sub-channels)     
-    "affiliation": string       # the agency the VTuber is currently part of, or "indie".
+    "id": string,               // Unique ID of this VTuber
+    "name": string,             // The VTuber's English name
+    "originalName"?: string,    // The VTuber's name in original/ other common script 
+    "youtubeId"?: string,       // the VTuber's YouTube channel ID (no sub-channels as of now)
+    "twitchId"?: string,        // the VTuber's Twitch channel ID (no sub-channels)     
+    "affiliation": string       // the agency the VTuber is currently part of, or "indie".
 }
 ```
 
@@ -41,17 +41,17 @@ Returns an array of `VTuber`s that are currently live on any platform.
 Streams doesn't have any associated endpoints. However, the `Stream` resource below is shared across all platform-specific stream & video endpoints.
 
 `Stream` resource:
-```json
+```typescript
 {
-    "id": string,               # platform-specific stream ID
-    "channelId": string,        # platform-specific channel ID
-    "platform": string,         # platform identifier ("youtube", "twitch",...)
-    "title": string,            # Title
-    "status": integer,          # 0 - offline, 1 - live, 2 - upcoming
-    "description"?: string,     # stream description (youtube only)
-    "startedAt"?: string,       # ISO 8601 string
-    "endedAt"?: string,         # ISO 8601 string
-    "scheduledFor"?: string     # youtube only, ISO 8601 string
+    "id": string,               // platform-specific stream ID
+    "channelId": string,        // platform-specific channel ID
+    "platform": string,         // platform identifier ("youtube", "twitch",...)
+    "title": string,            // Title
+    "status": integer,          // 0 - offline, 1 - live, 2 - upcoming
+    "description"?: string,     // stream description (youtube only)
+    "startedAt"?: string,       // ISO 8601 string
+    "endedAt"?: string,         // ISO 8601 string
+    "scheduledFor"?: string     // youtube only, ISO 8601 string
 }
 ```
 
@@ -70,7 +70,7 @@ Returns all currently live Twitch streams as an array of `Stream`s. In future ve
 GET /twitch/{vtuberId}/live
 ```
 Returns
-```json
+```typescript
 {
     "isLive": boolean,
     "stream"?: Stream
@@ -83,7 +83,7 @@ for the VTuber with the given ID.
 GET /twitch/{vtuberId}/channel
 ```
 Returns
-```json
+```typescript
 {
     "vtuberId": string,
     "channelId": string | null
