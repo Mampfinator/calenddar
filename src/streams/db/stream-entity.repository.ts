@@ -5,6 +5,7 @@ import { GenericStream } from '../GenericStream';
 import { StreamSchemaFactory } from './stream-schema.factory';
 import { StreamSchema } from './stream.schema';
 import { Model } from 'mongoose';
+import { VideoStatusEnum } from '../stream.read';
 
 @Injectable()
 export class StreamEntityRepository extends BaseEntityRepository<
@@ -16,5 +17,15 @@ export class StreamEntityRepository extends BaseEntityRepository<
         streamSchemaFactory: StreamSchemaFactory,
     ) {
         super(streamModel, streamSchemaFactory);
+    }
+
+    async findByStatus(status: VideoStatusEnum, platform?: string) {
+        return this.find({status, platform});
+    }
+
+    async findNonOffline(platform?: string) {
+        const live = await this.findByStatus(VideoStatusEnum.Live, platform);
+        const upcoming = await this.findByStatus(VideoStatusEnum.Upcoming, platform);
+        return live.concat(upcoming);
     }
 }

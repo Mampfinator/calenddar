@@ -8,6 +8,11 @@ export interface APIOptions {
     port: number;
 }
 
+export interface YouTubeOptions {
+    quotaLimit: number;
+    usableQuota: number;
+}
+
 export type LoggingOptions = ("log" | "error" | "warn" | "debug" | "verbose")[]
 
 
@@ -28,6 +33,10 @@ export default () => {
     if (!yamlConfig.api) throw new TypeError("[config file] api options not found!")
     if (!yamlConfig.api.host) throw new TypeError("[config file] api.host not found!");
     if (!yamlConfig.api.port) throw new TypeError("[config file] api.port not found!");
+
+    if (!yamlConfig.youtube) yamlConfig.youtube = {quotaLimit: 10000, usableQuota: 1};
+    if (!yamlConfig.youtube.quotaLimit) yamlConfig.youtube.quotaLimit = 10000;
+    if (!yamlConfig.youtube.usableQuota) yamlConfig.youtube.usableQuota = 1;
 
     return {...envConfig, ...yamlConfig} as Record<string, any>; 
 }

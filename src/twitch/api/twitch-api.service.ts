@@ -2,8 +2,7 @@ import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from "@nestjs/commo
 import { ConfigService } from "@nestjs/config";
 import { Channels, EventSubSubscriptions, SearchChannels, Streams, TwitchOAuth2URL } from "./constants";
 import { TwitchRequestBuilder } from "./classes/TwitchRequestBuilder";
-import {default as ms} from "ms";
-import { APIOptions } from "src/config/config";
+import { APIOptions } from "../../config/config";
 
 interface AccessTokenGrant {
     access_token: string, 
@@ -19,8 +18,6 @@ export class TwitchAPIService implements OnModuleInit, OnModuleDestroy {
     private readonly clientId: string;
 
     private accessToken: string;
-    private _refreshToken: string;
-    private _expiresIn: number;
     private _refreshInterval: ReturnType<typeof setInterval>;
 
 
@@ -32,36 +29,23 @@ export class TwitchAPIService implements OnModuleInit, OnModuleDestroy {
     }
 
     async onModuleInit() {
-        const { access_token, refresh_token, expires_in }: AccessTokenGrant = await new TwitchRequestBuilder()
-            .setUrl(TwitchOAuth2URL)
-            .setMethod("POST")
-            .setParameter("client_id", this.clientId)
-            .setParameter("client_secret", this.secret)
-            .setParameter("grant_type", "client_credentials")
-            .send();
-        this.accessToken = access_token;
-
-        this._refreshToken = refresh_token;
-        this._expiresIn = parseInt(expires_in, 10);
-
-        const refresh = async () => {
-            const { refresh_token }: AccessTokenGrant = await new TwitchRequestBuilder()
+        const generateToken = async () => { 
+            const { access_token }: AccessTokenGrant = await new TwitchRequestBuilder()
                 .setUrl(TwitchOAuth2URL)
                 .setMethod("POST")
                 .setParameter("client_id", this.clientId)
-                .setParameter("grant_type", "refresh_token")
                 .setParameter("client_secret", this.secret)
-                .setParameter("refresh_token", this._refreshToken)
+                .setParameter("grant_type", "client_credentials")
                 .send();
-
-            this._refreshToken = refresh_token;
-
-            this.logger.debug(`Got new Twitch refresh token: "${refresh_token.substring(0, 9)}..."`);
+            this.accessToken = access_token;
+            
+            this.logger.debug(`Got Twitch access token: "${this.accessToken.substring(0, 9)}...". Refreshing in 30 days.`);
         }
 
-        // app access token expiry is a fixed ~ 60 days, so this should be good enough.
-        this._refreshInterval = setInterval(() => refresh(), this._expiresIn - ms("30m"));
-        this.logger.debug(`Got initial Twitch access token: "${access_token.substring(0, 9)}..." - expires in ${ms(this._expiresIn)}`);
+        await generateToken();
+
+        // app access token expiry is a fixed ~ 60 days, so generating a new one every 30 is *probably* good enough.
+        this._refreshInterval = setInterval(() => generateToken(), Math.pow(2, 31) - 1);
     }
 
     onModuleDestroy() {

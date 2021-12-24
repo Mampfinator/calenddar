@@ -39,27 +39,29 @@ export class YouTubeEventSubFeedHandler implements IEventHandler<YouTubeEventSub
         } = snippet;
 
 
-        // figure out times
-        const {
-            scheduledStartTime,
-            actualStartTime,
-            actualEndTime,
-        } = liveStreamingDetails;
+        if (liveStreamingDetails) {
+            // figure out times
+            const {
+                scheduledStartTime,
+                actualStartTime,
+                actualEndTime,
+            } = liveStreamingDetails;
 
-        let startedAt = new Date(actualStartTime)
-        let scheduledFor = new Date(scheduledStartTime); 
-        let endedAt = new Date(actualEndTime)
+            var startedAt = new Date(actualStartTime)
+            var scheduledFor = new Date(scheduledStartTime); 
+            var endedAt = new Date(actualEndTime)
 
-        startedAt = isValidDate(startedAt) ? startedAt : undefined;
-        scheduledFor = isValidDate(scheduledFor) ? scheduledFor : undefined;
-        endedAt = isValidDate(endedAt) ? endedAt : undefined; 
-        
+            startedAt = isValidDate(startedAt) ? startedAt : undefined;
+            scheduledFor = isValidDate(scheduledFor) ? scheduledFor : undefined;
+            endedAt = isValidDate(endedAt) ? endedAt : undefined; 
+            
 
-        let status: VideoStatusEnum;
-        switch (liveBroadcastContent) {
-            case "live":        status = VideoStatusEnum.Live; break;
-            case "none":        status = VideoStatusEnum.Offline; break;
-            case "upcoming":    status = VideoStatusEnum.Upcoming; break;
+            var status: VideoStatusEnum;
+            switch (liveBroadcastContent) {
+                case "live":        status = VideoStatusEnum.Live; break;
+                case "none":        status = VideoStatusEnum.Offline; break;
+                case "upcoming":    status = VideoStatusEnum.Upcoming; break;
+            }
         }
 
         const dbVideo = await this.streamFactory.create(
@@ -67,9 +69,9 @@ export class YouTubeEventSubFeedHandler implements IEventHandler<YouTubeEventSub
             channelId, 
             "youtube",
             title,
-            status,
+            status ?? VideoStatusEnum.Offline,
             description,
-            startedAt, 
+            startedAt, // TODO: figure out if there's a "start-time" equivalent for uploads
             endedAt,
             scheduledFor
         );

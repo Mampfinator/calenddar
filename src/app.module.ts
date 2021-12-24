@@ -20,7 +20,6 @@ import { AppController } from './app.controller';
 import { RawBodyMiddleware } from './middleware/raw-body.middleware';
 import { JSONBodyMiddleware } from './middleware/json-body.middleware';
 import { WebeventsModule } from './webevents/webevents.module';
-import { startAllTimers } from './decorators/dynamic-timer.decorator';
 
 @Module({
     imports: [
@@ -59,7 +58,7 @@ import { startAllTimers } from './decorators/dynamic-timer.decorator';
     providers: [ AppService ],
     controllers: [ AppController ]
 })
-export class AppModule implements NestModule, OnApplicationBootstrap {
+export class AppModule implements NestModule {
     public configure(consumer: MiddlewareConsumer) {
         consumer
         .apply(RawBodyMiddleware)
@@ -68,9 +67,5 @@ export class AppModule implements NestModule, OnApplicationBootstrap {
         .apply(JSONBodyMiddleware)
         .exclude("/graphql")
         .forRoutes("*")
-    }
-
-    async onApplicationBootstrap() {
-        await startAllTimers();
     }
 }

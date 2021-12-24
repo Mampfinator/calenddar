@@ -1,4 +1,5 @@
 import { AggregateRoot } from '@nestjs/cqrs';
+import { YouTubeAPIVideo } from 'src/youtube/api/interfaces/YouTubeAPIVideo';
 import { VideoStatusEnum } from './stream.read';
 
 export class GenericStream extends AggregateRoot {
@@ -38,5 +39,9 @@ export class GenericStream extends AggregateRoot {
 
     isOffline(): boolean {
         return this.status === VideoStatusEnum.Offline;
+    }
+
+    updateFromYouTubeApi(video: YouTubeAPIVideo) {
+        if (this.platform !== "youtube") throw new Error(`Tried updating non-YouTube stream from YouTube API!`);
     }
 }

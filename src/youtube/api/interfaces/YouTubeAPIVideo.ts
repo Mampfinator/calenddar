@@ -1,9 +1,10 @@
 // taken from the [YouTube API reference](https://developers.google.com/youtube/v3/docs/videos#resource), modified for TypeScript
 export interface YouTubeAPIVideo {
-    kind: "youtube#video",
-    etag: string,
+    deleted?: boolean, // custom field :LutoShrug:
+    kind?: "youtube#video",
+    etag?: string,
     id: string,
-    snippet: {
+    snippet?: {
       publishedAt: string,
       channelId: string,
       title: string,
@@ -28,7 +29,7 @@ export interface YouTubeAPIVideo {
       },
       defaultAudioLanguage: string
     },
-    contentDetails: {
+    contentDetails?: {
       duration: string,
       dimension: string,
       definition: string,
@@ -42,7 +43,7 @@ export interface YouTubeAPIVideo {
           string
         ]
       },
-      contentRating: {
+      contentRating?: {
         acbRating: string,
         agcomRating: string,
         anatelRating: string,
@@ -116,7 +117,7 @@ export interface YouTubeAPIVideo {
       projection: string,
       hasCustomThumbnail: boolean
     },
-    status: {
+    status?: {
       uploadStatus: string,
       failureReason: string,
       rejectionReason: string,
@@ -128,19 +129,19 @@ export interface YouTubeAPIVideo {
       madeForKids: boolean,
       selfDeclaredMadeForKids: boolean
     },
-    statistics: {
+    statistics?: {
       viewCount: number,
       likeCount: number,
       dislikeCount: number,
       favoriteCount: number,
       commentCount: number
     },
-    player: {
+    player?: {
       embedHtml: string,
       embedHeight: number,
       embedWidth: number
     },
-    topicDetails: {
+    topicDetails?: {
       topicIds: [
         string
       ],
@@ -151,10 +152,10 @@ export interface YouTubeAPIVideo {
         string
       ]
     },
-    recordingDetails: {
+    recordingDetails?: {
       recordingDate: string
     },
-    fileDetails: {
+    fileDetails?: {
       fileName: string,
       fileSize: number,
       fileType: string,
@@ -171,7 +172,7 @@ export interface YouTubeAPIVideo {
           vendor: string
         }
       ],
-      audioStreams: [
+      audioStreams?: [
         {
           channelCount: number,
           codec: string,
@@ -183,7 +184,7 @@ export interface YouTubeAPIVideo {
       bitrateBps: number,
       creationTime: string
     },
-    processingDetails: {
+    processingDetails?: {
       processingStatus: string,
       processingProgress: {
         partsTotal: number,
@@ -197,7 +198,7 @@ export interface YouTubeAPIVideo {
       editorSuggestionsAvailability: string,
       thumbnailsAvailability: string
     },
-    suggestions: {
+    suggestions?: {
       processingErrors: [
         string
       ],
@@ -219,7 +220,7 @@ export interface YouTubeAPIVideo {
         string
       ]
     },
-    liveStreamingDetails: {
+    liveStreamingDetails?: {
       actualStartTime: string,
       actualEndTime: string,
       scheduledStartTime: string,
@@ -227,7 +228,7 @@ export interface YouTubeAPIVideo {
       concurrentViewers: number,
       activeLiveChatId: string
     },
-    localizations: {
+    localizations?: {
       [key: string]: {
         title: string,
         description: string

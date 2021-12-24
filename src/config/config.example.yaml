@@ -2,4 +2,6 @@ api:
   host: "your-domain.edu"
   port: 3000
 
-logLevel: ["log", "debug", "warn", "error"]
+youtube:
+  quotaLimit: 10000 # daily YouTube API quota limit; used to determine polling intervals
+  usableQuota: 1 # percentage of the above quota the interval is allowed to use.

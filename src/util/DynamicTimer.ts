@@ -11,7 +11,7 @@ export class DynamicTimer {
 
         this._internalCallback = async () => {
             await Reflect.apply(this._callback, this, callbackArgs ?? []);
-            const interval = await this._intervalGenerator()
+            const interval = await Reflect.apply(this._intervalGenerator, this, callbackArgs ?? []);
             console.log(`Interval: ${interval}`);
             this._timeoutId = setTimeout(this._internalCallback, interval);
         }

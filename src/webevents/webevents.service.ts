@@ -26,12 +26,6 @@ export class WebeventsService {
         this.websocketService.broadcast(webevent);
     }
 
-    @OnEvent("*") 
-    async logEvent(data) {
-        if (typeof data === "object" && !(data instanceof Array)) data = JSON.stringify(data);
-        this.logger.log(`Got event in WebEvents module: ${data}`);
-    }
-
     // event handlers are all central to the event service.
     // event handlers are structured webevents.[platform].[event].
 

@@ -35,7 +35,7 @@ export class YouTubeRequestBuilder {
         return this;
     }
 
-    async send(attachKey?: boolean, resolveFull?: boolean) {
+    async send(resolveFull?: boolean) {
         const res = await axios({
             baseURL: this.baseUrl,
             headers: this.headers, 

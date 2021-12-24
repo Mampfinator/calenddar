@@ -98,7 +98,7 @@ export class YouTubeEventSubController {
             if (computedSignature !== signature) throw new InvalidSignatureException(); // per spec, return 202 a non-matching signature was computed.
         }
 
-        if (xmlBody && xmlBody.items?.length > 0) this.eventBus.publish(new YouTubeEventSubFeedEvent(xmlBody.items));
+        if (xmlBody && xmlBody.items?.length > 0 && xmlBody.items[0].videoId) this.eventBus.publish(new YouTubeEventSubFeedEvent(xmlBody.items[0]));
         else this.logger.debug(`Could not find items in YouTube PubSub XML Body: ${rawBody}`);
     }
 }

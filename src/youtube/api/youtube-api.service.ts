@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Videos } from "./constants";
 import { YouTubeAPIVideo } from "./interfaces/YouTubeAPIVideo";
@@ -6,6 +6,7 @@ import { YouTubeRequestBuilder } from "./YouTubeRequestBuilder";
 
 @Injectable()
 export class YouTubeAPIService {
+    private readonly logger = new Logger(YouTubeAPIService.name);
     private readonly apiKey: string;
 
     constructor(
@@ -15,6 +16,7 @@ export class YouTubeAPIService {
     }
 
     async getVideoById(id: string): Promise<YouTubeAPIVideo> {
+        if (!id) throw new TypeError(`getVideoById - no ID provided!`);
         return (await new YouTubeRequestBuilder()
             .setApiKey(this.apiKey)
             .setUrl(Videos)
@@ -23,18 +25,38 @@ export class YouTubeAPIService {
             .send()).items[0];
     }
 
-    // TODO: do multiple requests & join if ids.length > 50
-    // TODO: if an ID is missing, add it back to the return 
-    async getVideosByIds(...ids: string[]) {
-        return (await new YouTubeRequestBuilder()
-            .setApiKey(this.apiKey)
-            .setUrl(Videos)
-            .setParameter("id", ids.join(","))
-            .setPart(["liveStreamingDetails", "id", "snippet"])
-            .send()).items;
+    async getVideosByIds(...ids: string[]): Promise<YouTubeAPIVideo[]> {
+        if (!ids || ids.length === 0) throw new TypeError(`No IDs provided!`);
+
+        const idBatches: string[][] = [];
+        for (let i = 0; i < ids.length; i+= 50) {
+            idBatches.push(ids.slice(i, i+50)); 
+        }
+
+        this.logger.debug(`[getVideosByIds] Batches: ${idBatches.length}, total videos: ${ids.length}.`);
+
+        const items: YouTubeAPIVideo[] = [];
+        for (const idBatch of idBatches) {
+            const batchItems: YouTubeAPIVideo[] = (await new YouTubeRequestBuilder()
+                .setApiKey(this.apiKey)
+                .setUrl(Videos)
+                .setParameter("id", idBatch.join(","))
+                .setPart(["liveStreamingDetails", "id", "snippet"])
+                .send()).items;
+
+
+            // see if any videos we wanted to request are missing from the response, and add a minimum amount of data to indicate that to the return.
+            const idSet = new Set<string>(idBatch);
+            for (const item of batchItems) idSet.delete(item.id);
+            for (const id of idSet) batchItems.push({
+                deleted: true,
+                id
+            });
+
+            items.concat(batchItems);
+
+        }
+
+        return items;
     }
-
-    async 
-
-
 }
