@@ -1,12 +1,12 @@
-import axios from "axios";
+import axios from 'axios';
 
 export class YouTubeRequestBuilder {
-    private headers: {[key: string]: string} = {};
-    private parameters: {[key: string]: string | number | boolean} = {};
+    private headers: { [key: string]: string } = {};
+    private parameters: { [key: string]: string | number | boolean } = {};
     private baseUrl: string;
 
     setApiKey(key: string) {
-        this.setParameter("key", key);
+        this.setParameter('key', key);
         return this;
     }
 
@@ -25,22 +25,22 @@ export class YouTubeRequestBuilder {
         return this;
     }
 
-    setParameters(parameters: {[key: string]: string | number | boolean}) {
-        this.parameters = {...this.parameters, ...parameters};
-        return this; 
+    setParameters(parameters: { [key: string]: string | number | boolean }) {
+        this.parameters = { ...this.parameters, ...parameters };
+        return this;
     }
 
     setPart(parts: string[]) {
-        this.setParameter("part", parts.join(","));
+        this.setParameter('part', parts.join(','));
         return this;
     }
 
     async send(resolveFull?: boolean) {
         const res = await axios({
             baseURL: this.baseUrl,
-            headers: this.headers, 
+            headers: this.headers,
             params: this.parameters,
-            method: "GET"
+            method: 'GET',
         });
 
         return !resolveFull ? res.data : res;

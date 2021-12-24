@@ -34,7 +34,7 @@ import { StreamFactory } from './stream.factory';
         StreamReadFactory,
         StreamReadRepository,
         StreamEntityRepository,
-        StreamFactory
+        StreamFactory,
     ],
     controllers: [StreamsController],
     exports: [
@@ -43,7 +43,7 @@ import { StreamFactory } from './stream.factory';
         StreamReadRepository,
         StreamEntityRepository,
         StreamFactory,
-        StreamsService
+        StreamsService,
     ],
 })
 export class StreamsModule {}

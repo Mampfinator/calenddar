@@ -1,1 +1,1 @@
-export const CONFIG_TOKEN = Symbol("config token");
+export const CONFIG_TOKEN = Symbol('config token');

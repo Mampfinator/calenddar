@@ -20,12 +20,15 @@ export class StreamEntityRepository extends BaseEntityRepository<
     }
 
     async findByStatus(status: VideoStatusEnum, platform?: string) {
-        return this.find({status, platform});
+        return this.find({ status, platform });
     }
 
     async findNonOffline(platform?: string) {
         const live = await this.findByStatus(VideoStatusEnum.Live, platform);
-        const upcoming = await this.findByStatus(VideoStatusEnum.Upcoming, platform);
+        const upcoming = await this.findByStatus(
+            VideoStatusEnum.Upcoming,
+            platform,
+        );
         return live.concat(upcoming);
     }
 }

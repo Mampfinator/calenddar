@@ -8,7 +8,7 @@ import {
     Logger,
     UseGuards,
     HttpCode,
-    Header
+    Header,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import { Stream, VideoStatusEnum } from '../streams/stream.read';
@@ -34,15 +34,15 @@ export class TwitchController {
         private readonly streamRepository: StreamEntityRepository,
         private readonly streamReadFactory: StreamReadFactory,
         private readonly vtuberRepository: VTuberEntityRepository,
-        private readonly eventBus: EventBus
+        private readonly eventBus: EventBus,
     ) {}
 
     @Get('live')
     async getLiveStreams(): Promise<Stream[]> {
-        const streams = (await this.streamRepository.findByQuery({
+        const streams = await this.streamRepository.findByQuery({
             platform: 'twitch',
             status: VideoStatusEnum.Live,
-        }));
+        });
         return streams.map((v) => this.streamReadFactory.createFromRoot(v));
     }
 
@@ -79,25 +79,26 @@ export class TwitchController {
         return { channelId: vtuber.getTwitchId() ?? null };
     }
 
-    @Post("eventsub")
+    @Post('eventsub')
     @HttpCode(200)
-    @Header("Content-Type", "text/plain")
+    @Header('Content-Type', 'text/plain')
     @UseGuards(TwitchEventSubGuard)
-    async eventSub<T extends TwitchEventNotificationBase>(@EventSub() notification: T) {
-        if (typeof notification === "string") {
+    async eventSub<T extends TwitchEventNotificationBase>(
+        @EventSub() notification: T,
+    ) {
+        if (typeof notification === 'string') {
             this.logger.debug(`Sending back challenge ${notification}.`);
             return notification;
         }
         let event;
         switch (notification.type) {
-            case "stream.online": 
+            case 'stream.online':
                 event = new TwitchStreamLiveEvent(notification);
                 break;
-            case "stream.offline": 
-                event = new TwitchStreamOfflineEvent(notification); 
+            case 'stream.offline':
+                event = new TwitchStreamOfflineEvent(notification);
         }
 
         this.eventBus.publish(event);
-        
     }
 }

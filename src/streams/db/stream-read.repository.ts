@@ -6,7 +6,6 @@ import { ObjectId } from 'mongodb';
 import { StreamSchemaFactory } from './stream-schema.factory';
 import { GenericStream } from '../GenericStream';
 
-
 @Injectable()
 export class StreamReadRepository {
     constructor(

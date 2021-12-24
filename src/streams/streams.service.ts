@@ -8,6 +8,6 @@ export class StreamsService {
 
     constructor(
         public readonly twitchService: TwitchService,
-        public readonly youtubeService: YouTubeService
+        public readonly youtubeService: YouTubeService,
     ) {}
 }

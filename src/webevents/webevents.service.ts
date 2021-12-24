@@ -15,13 +15,18 @@ export class WebeventsService {
         private readonly vtuberRepository: VTuberEntityRepository,
     ) {}
 
-    async send(event: string, vtuberIds: string[], platform: string, payload: object) {
+    async send(
+        event: string,
+        vtuberIds: string[],
+        platform: string,
+        payload: object,
+    ) {
         const webevent = {
             event,
             vtubers: vtuberIds,
             platform,
-            data: payload
-        }
+            data: payload,
+        };
 
         this.websocketService.broadcast(webevent);
     }
@@ -32,78 +37,89 @@ export class WebeventsService {
     /* ---------------------------------------------- */
     /*                 YOUTUBE EVENTS                 */
     /* ---------------------------------------------- */
-    @OnEvent("webevents.youtube.upload")
+    @OnEvent('webevents.youtube.upload')
     async handleYouTubeUpload(video: Stream) {
         this.logger.debug(`Received youtube.upload webevent for ${video.id}`);
 
         const stream = {
-            ...video, 
-            status: "offline"
+            ...video,
+            status: 'offline',
         };
 
-        const vtubers = (await this.vtuberRepository.findByYoutubeId(stream.channelId)).map(v => v.getId());
-        await this.send("upload", vtubers, "youtube", stream);
+        const vtubers = (
+            await this.vtuberRepository.findByYoutubeId(stream.channelId)
+        ).map((v) => v.getId());
+        await this.send('upload', vtubers, 'youtube', stream);
     }
 
-    @OnEvent("webevents.youtube.upcoming")
+    @OnEvent('webevents.youtube.upcoming')
     async handleYouTubeUpcoming(video: Stream) {
         this.logger.debug(`Received youtube.upcoming webevent for ${video.id}`);
 
         const stream = {
-            ...video, 
-            status: "upcoming"
+            ...video,
+            status: 'upcoming',
         };
 
-        const vtubers = (await this.vtuberRepository.findByYoutubeId(stream.channelId)).map(v => v.getId());
-        await this.send("upcoming", vtubers, "youtube", stream);
+        const vtubers = (
+            await this.vtuberRepository.findByYoutubeId(stream.channelId)
+        ).map((v) => v.getId());
+        await this.send('upcoming', vtubers, 'youtube', stream);
     }
 
-    @OnEvent("webevents.youtube.live") 
+    @OnEvent('webevents.youtube.live')
     async handleYouTubeLive(video: Stream) {
         this.logger.debug(`Received youtube.live webevent for ${video.id}`);
 
         const stream = {
-            ...video, 
-            status: "live"
+            ...video,
+            status: 'live',
         };
 
-        const vtubers = (await this.vtuberRepository.findByYoutubeId(stream.channelId)).map(v => v.getId());
-        await this.send("live", vtubers, "youtube", stream);
+        const vtubers = (
+            await this.vtuberRepository.findByYoutubeId(stream.channelId)
+        ).map((v) => v.getId());
+        await this.send('live', vtubers, 'youtube', stream);
     }
 
-    @OnEvent("webevents.youtube.offline")
+    @OnEvent('webevents.youtube.offline')
     async handleYouTubeOffline(video: Stream) {
         const stream = {
-            ...video, 
-            status: "offline"
+            ...video,
+            status: 'offline',
         };
 
-        const vtubers = (await this.vtuberRepository.findByYoutubeId(stream.channelId)).map(v => v.getId());
-        await this.send("offline", vtubers, "youtube", stream);
+        const vtubers = (
+            await this.vtuberRepository.findByYoutubeId(stream.channelId)
+        ).map((v) => v.getId());
+        await this.send('offline', vtubers, 'youtube', stream);
     }
-
 
     /* ---------------------------------------------- */
     /*                 TWITCH EVENTS                  */
     /* ---------------------------------------------- */
-    @OnEvent("webevents.twitch.live")
+    @OnEvent('webevents.twitch.live')
     async handleTwitchLive(originalStream: Stream) {
         const stream = {
             ...originalStream,
-            status: "live"
-        }
+            status: 'live',
+        };
 
-        const vtubers = (await this.vtuberRepository.findByTwitchId(stream.channelId)).map(v => v.getId());
-        await this.send("live", vtubers, "twitch", stream);
+        const vtubers = (
+            await this.vtuberRepository.findByTwitchId(stream.channelId)
+        ).map((v) => v.getId());
+        await this.send('live', vtubers, 'twitch', stream);
     }
-    @OnEvent("webevents.twitch.offline")
+    @OnEvent('webevents.twitch.offline')
     async handleTwitchOffline(originalStream: Stream) {
         const stream = {
             ...originalStream,
-            status: "offline"
-        }
+            status: 'offline',
+        };
 
-        const vtubers = (await this.vtuberRepository.findByTwitchId(stream.channelId)).map(v => v.getId());
-        await this.send("offline", vtubers, "twitch", stream);
+        const vtubers = (
+            await this.vtuberRepository.findByTwitchId(stream.channelId)
+        ).map((v) => v.getId());
+        await this.send('offline', vtubers, 'twitch', stream);
     }
 }

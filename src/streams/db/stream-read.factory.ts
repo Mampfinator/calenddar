@@ -34,18 +34,17 @@ export class StreamReadFactory {
     }
 
     createFromRoot(root: GenericStream): Stream {
-        const { 
-            id, 
-            title, 
-            channelId, 
-            platform, 
+        const {
+            id,
+            title,
+            channelId,
+            platform,
             status,
-            description, 
-            startedAt, 
-            endedAt, 
-            scheduledFor 
+            description,
+            startedAt,
+            endedAt,
+            scheduledFor,
         } = root;
-
 
         return new Stream(
             id,

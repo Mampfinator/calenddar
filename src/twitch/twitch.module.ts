@@ -12,7 +12,13 @@ import { TwitchEventSubModule } from './eventsub/twitch-eventsub.module';
 import { TwitchAPIService } from './api/twitch-api.service';
 
 @Module({
-    imports: [forwardRef(() => StreamsModule), forwardRef(() => VTubersModule), CqrsModule, forwardRef(() => TwitchAPIModule), forwardRef(() => TwitchEventSubModule)],
+    imports: [
+        forwardRef(() => StreamsModule),
+        forwardRef(() => VTubersModule),
+        CqrsModule,
+        forwardRef(() => TwitchAPIModule),
+        forwardRef(() => TwitchEventSubModule),
+    ],
     providers: [TwitchService, TwitchStreamFactory, ...TwitchEventHandlers],
     controllers: [TwitchController],
     exports: [TwitchService, TwitchEventSubModule, TwitchAPIModule],
@@ -21,9 +27,9 @@ export class TwitchModule implements OnApplicationBootstrap {
     constructor(
         private readonly twitchService: TwitchService,
         private readonly twitchEventsubService: TwitchEventSubService,
-        private readonly twitchApiService: TwitchAPIService
+        private readonly twitchApiService: TwitchAPIService,
     ) {}
-    
+
     async onApplicationBootstrap() {
         const userIds = await this.twitchService.getAllUserIds();
 
@@ -31,8 +37,8 @@ export class TwitchModule implements OnApplicationBootstrap {
 
         for (const userId of userIds) {
             promises.push(
-                this.twitchEventsubService.subscribe(userId), 
-                this.twitchService.syncUserState(userId)
+                this.twitchEventsubService.subscribe(userId),
+                this.twitchService.syncUserState(userId),
             );
         }
 

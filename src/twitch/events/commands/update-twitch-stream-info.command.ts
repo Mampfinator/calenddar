@@ -1,8 +1,6 @@
-import { ICommand } from "@nestjs/cqrs";
-import { HelixStream } from "@twurple/api";
+import { ICommand } from '@nestjs/cqrs';
+import { HelixStream } from '../../api/interfaces/HelixStream';
 
 export class UpdateTwitchStreamInfoCommand implements ICommand {
-    constructor(
-        public readonly helixStream: HelixStream
-    ) {}
+    constructor(public readonly helixStream: HelixStream) {}
 }

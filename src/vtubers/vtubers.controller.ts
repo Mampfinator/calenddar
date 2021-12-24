@@ -31,7 +31,7 @@ export class VTubersController {
     constructor(
         private readonly commandBus: CommandBus,
         private readonly queryBus: QueryBus,
-        private readonly eventBus: EventBus
+        private readonly eventBus: EventBus,
     ) {}
 
     @Get()
@@ -46,7 +46,7 @@ export class VTubersController {
     @CacheTTL(300)
     async getLiveVTubers() {
         return this.queryBus.execute<LiveVTubersQuery, VTuber[]>(
-            new LiveVTubersQuery("all"),
+            new LiveVTubersQuery('all'),
         );
     }
 
@@ -78,9 +78,7 @@ export class VTubersController {
     }
 
     @Get('live/:id')
-    async getVTuberLiveStatus(
-        @Param('id', ValidateObjectIdPipe) id: string
-    ) {
+    async getVTuberLiveStatus(@Param('id', ValidateObjectIdPipe) id: string) {
         //
     }
 

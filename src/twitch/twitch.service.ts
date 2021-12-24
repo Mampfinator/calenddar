@@ -24,9 +24,8 @@ export class TwitchService {
         private readonly eventBus: EventBus,
         private readonly eventEmitter: EventEmitter2,
         private readonly configService: ConfigService,
-        private readonly twitchApiService: TwitchAPIService
-    ) {
-    }
+        private readonly twitchApiService: TwitchAPIService,
+    ) {}
 
     async getAllUserIds(): Promise<string[]> {
         const vtubers = await this.vtuberRepository.findByQuery({
@@ -38,15 +37,32 @@ export class TwitchService {
     async syncUserState(userId: string): Promise<void> {
         const isLive = await this.twitchApiService.getStream(userId);
         if (!isLive) {
-            const currentLiveStreams = await this.streamRepository.findByQuery({status: VideoStatusEnum.Live, platform: "twitch", channelId: userId}).catch(() => {/**/});
-            if (!currentLiveStreams) return; 
+            const currentLiveStreams = await this.streamRepository
+                .findByQuery({
+                    status: VideoStatusEnum.Live,
+                    platform: 'twitch',
+                    channelId: userId,
+                })
+                .catch(() => {
+                    /**/
+                });
+            if (!currentLiveStreams) return;
             for (const liveStream of currentLiveStreams) {
                 // no stream online, meaning that, if there are streams currently marked as online, we can set them to offline instead.
                 liveStream.status = VideoStatusEnum.Offline;
-                await this.streamRepository.findOneAndReplaceById(liveStream._id, liveStream);
+                await this.streamRepository.findOneAndReplaceById(
+                    liveStream._id,
+                    liveStream,
+                );
             }
         } else {
-            if (!await this.streamRepository.findOneByQuery({streamId: isLive.id}).catch(() => {/* ignore not found */})) {
+            if (
+                !(await this.streamRepository
+                    .findOneByQuery({ streamId: isLive.id })
+                    .catch(() => {
+                        /* ignore not found */
+                    }))
+            ) {
                 await this.twitchStreamFactory.createFromHelixStream(isLive);
             }
         }

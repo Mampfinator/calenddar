@@ -1,8 +1,8 @@
-import { 
-    MiddlewareConsumer, 
-    Module, 
-    NestModule, 
-    OnApplicationBootstrap
+import {
+    MiddlewareConsumer,
+    Module,
+    NestModule,
+    OnApplicationBootstrap,
 } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { VTubersModule } from './vtubers/vtubers.module';
@@ -25,14 +25,14 @@ import { WebeventsModule } from './webevents/webevents.module';
     imports: [
         ConfigModule.forRoot({
             load: [config],
-            isGlobal: true
+            isGlobal: true,
         }),
         MongooseModule.forRootAsync({
             imports: [ConfigModule],
             useFactory: async (configService: ConfigService) => ({
-                uri: configService.get<string>("MONGODB_URI")
+                uri: configService.get<string>('MONGODB_URI'),
             }),
-            inject: [ConfigService]
+            inject: [ConfigService],
         }),
         ScheduleModule.forRoot(),
         EventEmitterModule.forRoot({
@@ -53,19 +53,19 @@ import { WebeventsModule } from './webevents/webevents.module';
         YouTubeModule,
         TwitchModule,
         StreamsModule,
-        WebeventsModule
+        WebeventsModule,
     ],
-    providers: [ AppService ],
-    controllers: [ AppController ]
+    providers: [AppService],
+    controllers: [AppController],
 })
 export class AppModule implements NestModule {
     public configure(consumer: MiddlewareConsumer) {
         consumer
-        .apply(RawBodyMiddleware)
-        .exclude("/graphql")
-        .forRoutes("*")
-        .apply(JSONBodyMiddleware)
-        .exclude("/graphql")
-        .forRoutes("*")
+            .apply(RawBodyMiddleware)
+            .exclude('/graphql')
+            .forRoutes('*')
+            .apply(JSONBodyMiddleware)
+            .exclude('/graphql')
+            .forRoutes('*');
     }
 }

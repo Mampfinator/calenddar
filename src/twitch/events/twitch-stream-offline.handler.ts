@@ -5,7 +5,6 @@ import { TwitchStreamOfflineEvent } from './twitch-stream-offline.event';
 export class TwitchStreamOfflineHandler
     implements IEventHandler<TwitchStreamOfflineEvent>
 {
-
     handle(event: TwitchStreamOfflineEvent) {
         // TODO: implement.
     }

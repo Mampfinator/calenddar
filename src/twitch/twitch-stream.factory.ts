@@ -1,22 +1,22 @@
-import { Injectable } from "@nestjs/common";
-import { StreamEntityRepository } from "../streams/db/stream-entity.repository";
-import { GenericStream } from "../streams/GenericStream";
-import { StreamFactory } from "../streams/stream.factory";
-import { VideoStatusEnum } from "../streams/stream.read";
+import { Injectable } from '@nestjs/common';
+import { StreamEntityRepository } from '../streams/db/stream-entity.repository';
+import { GenericStream } from '../streams/GenericStream';
+import { StreamFactory } from '../streams/stream.factory';
+import { VideoStatusEnum } from '../streams/stream.read';
 
 @Injectable()
 export class TwitchStreamFactory {
     constructor(
         private readonly streamFactory: StreamFactory,
-        private readonly streamRepository: StreamEntityRepository
+        private readonly streamRepository: StreamEntityRepository,
     ) {}
     async createFromHelixStream(helixStream): Promise<GenericStream> {
         return await this.streamFactory.create(
             helixStream.id,
             helixStream.user_id,
-            "twitch",
+            'twitch',
             helixStream.title,
-            VideoStatusEnum.Live
+            VideoStatusEnum.Live,
         );
     }
 
@@ -29,14 +29,13 @@ export class TwitchStreamFactory {
                 stream[streamField] = helixStream[helixField];
                 changes[streamField] = helixField;
             }
-        }
+        };
 
         // TODO: complete field updates
-        applyChange("title", "title");
+        applyChange('title', 'title');
 
         await this.streamRepository.findOneAndReplaceById(stream._id, stream);
 
         return changes;
     }
-    
 }

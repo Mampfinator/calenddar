@@ -21,13 +21,13 @@ export class VTuberEntityRepository extends BaseEntityRepository<
 
     async findByYoutubeId(id: string): Promise<VTuberRoot[]> {
         return this.find({
-            youtubeId: id
+            youtubeId: id,
         });
     }
 
     async findByTwitchId(id: string): Promise<VTuberRoot[]> {
         return this.find({
-            twitchId: id
+            twitchId: id,
         });
     }
 }
