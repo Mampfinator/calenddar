@@ -18,7 +18,6 @@ import { YouTubeService } from './youtube.service';
 import { ConfigService } from '@nestjs/config';
 import { YouTubeOptions } from 'src/config/config';
 import { YouTubeEventFactory } from './youtube-event.factory';
-
 @Module({
     imports: [
         CqrsModule,
@@ -29,7 +28,7 @@ import { YouTubeEventFactory } from './youtube-event.factory';
     ],
     providers: [YouTubeService, YouTubeEventFactory],
     controllers: [YouTubeController],
-    exports: [YouTubeService, YouTubeEventFactory],
+    exports: [YouTubeService, YouTubeEventFactory, YouTubeAPIModule, YouTubeEventSubModule],
 })
 export class YouTubeModule
     implements OnApplicationBootstrap, OnApplicationShutdown

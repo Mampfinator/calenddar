@@ -22,6 +22,8 @@ import { RawBodyMiddleware } from './middleware/raw-body.middleware';
 import { JSONBodyMiddleware } from './middleware/json-body.middleware';
 import { WebeventsModule } from './webevents/webevents.module';
 import { ThrottlerModule } from "@nestjs/throttler";
+import { APP_GUARD } from '@nestjs/core';
+import { ProtectedGuard } from './guards/protected-endpoint.guard';
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -61,7 +63,13 @@ import { ThrottlerModule } from "@nestjs/throttler";
         StreamsModule,
         WebeventsModule,
     ],
-    providers: [AppService],
+    providers: [
+        AppService,
+        {
+            provide: APP_GUARD,
+            useClass: ProtectedGuard
+        }
+    ],
     controllers: [AppController],
 })
 export class AppModule implements NestModule, OnApplicationBootstrap {

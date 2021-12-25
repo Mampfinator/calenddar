@@ -69,8 +69,8 @@ export class YouTubeService {
         return videosUpdating.length;
     }
 
-    async syncFeedVideoState() {
-        const channelIds = (await this.vtuberRepository.findByQuery({youtubeId: {$exists: true}})).map(v => v.getYoutubeId());
+    async syncFeedVideoState(...channelIds: string[]) {
+        if (!channelIds) channelIds = (await this.vtuberRepository.findByQuery({youtubeId: {$exists: true}})).map(v => v.getYoutubeId());
 
         const promises = [];
 

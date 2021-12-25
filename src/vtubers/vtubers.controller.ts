@@ -26,6 +26,7 @@ import { DeleteVTuberCommand } from './commands/delete-vtuber/delete-vtuber.comm
 import { VTuberDeletedEvent } from './events/vtuber-deleted.event';
 import { LiveVTubersQuery } from './queries/get-live.query';
 import { Throttle } from "@nestjs/throttler";
+import { Protected } from '../decorators/protected-endpoint.decorator';
 @UseInterceptors(CacheInterceptor)
 @Controller('vtubers')
 export class VTubersController {
@@ -54,6 +55,7 @@ export class VTubersController {
     }
 
     @Delete(':id')
+    @Protected()
     async deleteVTuber(
         @Param('id', ValidateObjectIdPipe) vtuberId: string,
     ): Promise<void> {
@@ -86,6 +88,7 @@ export class VTubersController {
     }
 
     @Post()
+    @Protected()
     async createVTuber(
         @Body() createVtuberRequest: CreateVTuberRequest,
     ): Promise<void> {
@@ -95,6 +98,7 @@ export class VTubersController {
     }
 
     @Patch(':id/channels')
+    @Protected()
     async updateChannels(
         @Param('id', ValidateObjectIdPipe) id: string,
         @Body() updateChannelsRequest: UpdateChannelsRequest,

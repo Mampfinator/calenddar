@@ -15,10 +15,14 @@ import { VTuberEventHandlers } from './events';
 import { VTuberCommandHandlers } from './commands';
 import { VTuberQueryHandlers } from './queries';
 import { StreamsModule } from '../streams/streams.module';
+import { TwitchModule } from '../twitch/twitch.module';
+import { YouTubeModule } from '../youtube/youtube.module';
 
 @Module({
     imports: [
         forwardRef(() => StreamsModule),
+        forwardRef(() => TwitchModule),
+        forwardRef(() => YouTubeModule),
         CqrsModule,
         MongooseModule.forFeatureAsync([
             {

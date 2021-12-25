@@ -4,4 +4,5 @@ export class CreateVTuberRequest {
     affiliation: string;
     youtubeId?: string;
     twitchId?: string;
+    twitchName?: string;
 }
