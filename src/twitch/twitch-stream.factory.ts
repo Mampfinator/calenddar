@@ -3,6 +3,7 @@ import { StreamEntityRepository } from '../streams/db/stream-entity.repository';
 import { GenericStream } from '../streams/GenericStream';
 import { StreamFactory } from '../streams/stream.factory';
 import { VideoStatusEnum } from '../streams/stream.read';
+import { HelixStream } from './api/interfaces/HelixStream';
 
 @Injectable()
 export class TwitchStreamFactory {
@@ -10,7 +11,7 @@ export class TwitchStreamFactory {
         private readonly streamFactory: StreamFactory,
         private readonly streamRepository: StreamEntityRepository,
     ) {}
-    async createFromHelixStream(helixStream): Promise<GenericStream> {
+    async createFromHelixStream(helixStream: HelixStream): Promise<GenericStream> {
         return await this.streamFactory.create(
             helixStream.id,
             helixStream.user_id,
@@ -20,18 +21,15 @@ export class TwitchStreamFactory {
         );
     }
 
+    // TODO: find out if it's still actually needed...?
     async updateFromHelixStream(helixStream, stream: GenericStream) {
         const changes = {};
-
-        // TODO: comparator function as optional argument (for tag lists, for example)
         const applyChange = (helixField: string, streamField: string): void => {
             if (helixStream[helixField] != stream[streamField]) {
                 stream[streamField] = helixStream[helixField];
                 changes[streamField] = helixField;
             }
         };
-
-        // TODO: complete field updates
         applyChange('title', 'title');
 
         await this.streamRepository.findOneAndReplaceById(stream._id, stream);

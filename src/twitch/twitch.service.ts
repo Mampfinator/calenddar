@@ -35,8 +35,8 @@ export class TwitchService {
     }
 
     async syncUserState(userId: string): Promise<void> {
-        const isLive = await this.twitchApiService.getStream(userId);
-        if (!isLive) {
+        const channel = await this.twitchApiService.getChannelInformation(userId);
+        if (channel.game_id === undefined) {
             const currentLiveStreams = await this.streamRepository
                 .findByQuery({
                     status: VideoStatusEnum.Live,
@@ -46,7 +46,9 @@ export class TwitchService {
                 .catch(() => {
                     /**/
                 });
-            if (!currentLiveStreams) return;
+            if (!currentLiveStreams) {
+                return;
+            }
             for (const liveStream of currentLiveStreams) {
                 // no stream online, meaning that, if there are streams currently marked as online, we can set them to offline instead.
                 liveStream.status = VideoStatusEnum.Offline;
@@ -56,14 +58,15 @@ export class TwitchService {
                 );
             }
         } else {
-            if (
+            const stream = await this.twitchApiService.getStream(userId);
+            if (stream && 
                 !(await this.streamRepository
-                    .findOneByQuery({ streamId: isLive.id })
+                    .findOneByQuery({ streamId: stream.id })
                     .catch(() => {
                         /* ignore not found */
                     }))
             ) {
-                await this.twitchStreamFactory.createFromHelixStream(isLive);
+                await this.twitchStreamFactory.createFromHelixStream(stream);
             }
         }
     }

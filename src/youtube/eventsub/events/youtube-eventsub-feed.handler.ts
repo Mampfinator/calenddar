@@ -63,7 +63,6 @@ export class YouTubeEventSubFeedHandler
             throw new Error(
                 `Could not determine webevent for video [${videoId}]: ${title}`,
             );
-        this.logger.log(`Emitting event ${webevent} for video ${videoId}.`);
         this.eventEmitter.emit(webevent, newVideo);
 
         return dbVideo;

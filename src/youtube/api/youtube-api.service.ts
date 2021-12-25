@@ -6,6 +6,7 @@ import { YouTubeV3Video } from './interfaces/V3Video';
 import { YouTubeRequestBuilder } from './YouTubeRequestBuilder';
 import { isValidDate } from '../../util';
 import { VideoStatusEnum } from '../../streams/stream.read';
+import { APIVideoStatusException } from '../errors/APIVideoStatusException';
 
 @Injectable()
 export class YouTubeAPIService {
@@ -77,6 +78,22 @@ export class YouTubeAPIService {
         // general details
         const { channelId, title, description, liveBroadcastContent } = snippet;
 
+        var status: VideoStatusEnum;
+        switch (liveBroadcastContent) {
+            case 'live':
+                status = VideoStatusEnum.Live;
+                break;
+            case undefined:
+            case 'none':
+                status = VideoStatusEnum.Offline;
+                break;
+            case 'upcoming':
+                status = VideoStatusEnum.Upcoming;
+                break;
+            default: 
+                throw new APIVideoStatusException(video);
+        }
+
         if (liveStreamingDetails) {
             // figure out times
             const { scheduledStartTime, actualStartTime, actualEndTime } =
@@ -89,21 +106,6 @@ export class YouTubeAPIService {
             startedAt = isValidDate(startedAt) ? startedAt : undefined;
             scheduledFor = isValidDate(scheduledFor) ? scheduledFor : undefined;
             endedAt = isValidDate(endedAt) ? endedAt : undefined;
-
-            var status: VideoStatusEnum;
-            switch (liveBroadcastContent) {
-                case 'live':
-                    status = VideoStatusEnum.Live;
-                    break;
-                case 'none':
-                    status = VideoStatusEnum.Offline;
-                    break;
-                case 'upcoming':
-                    status = VideoStatusEnum.Upcoming;
-                    break;
-                default: 
-                    status = VideoStatusEnum.Offline;
-            }
         }
 
         return {

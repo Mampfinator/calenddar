@@ -14,6 +14,9 @@ import {
 } from './constants';
 import { TwitchRequestBuilder } from './TwitchRequestBuilder';
 import { APIOptions } from '../../config/config';
+import { HelixStream } from './interfaces/HelixStream';
+import { HelixChannelInformation } from './interfaces/HelixChannelInformation';
+import { HelixUser } from './interfaces/HelixUser';
 
 interface AccessTokenGrant {
     access_token: string;
@@ -118,15 +121,16 @@ export class TwitchAPIService implements OnModuleInit, OnModuleDestroy {
     }
 
     async deleteAllSubscriptions() {
-        for (const { id } of await this.getSubscriptions()) {
-            const { status } = await this.deleteSubscription(id);
-            this.logger.log(
-                `Attempting to delete subscription with ID ${id}. Received status: ${status}.`,
-            );
+        const subscriptions = await this.getSubscriptions()
+        const deletionPromises = [];
+        for (const { id } of subscriptions) {
+            deletionPromises.push(this.deleteSubscription(id));
         }
+        const failures = (await Promise.all(deletionPromises)).filter(({status}) =>  status !== 204);
+        this.logger.log(`Deleted ${subscriptions.length - failures.length} subscriptions successfully. ${failures.length > 0 ? `Failed deleting ${failures.length}.`: ""}`);
     }
 
-    async getChannelInformation(id: string) {
+    async getChannelInformation(id: string): Promise<HelixChannelInformation> {
         return (
             await new TwitchRequestBuilder()
                 .setUrl(Channels)
@@ -135,13 +139,13 @@ export class TwitchAPIService implements OnModuleInit, OnModuleDestroy {
                 .setClientId(this.clientId)
                 .setParameter('broadcaster_id', id)
                 .send()
-        ).data;
+        ).data[0];
     }
 
     async searchChannels(
         query: string,
         filter?: { first?: number; after?: string; live_only?: boolean },
-    ) {
+    ): Promise<HelixUser[]> {
         const builder = new TwitchRequestBuilder()
             .setUrl(SearchChannels)
             .setMethod('GET')
@@ -154,15 +158,15 @@ export class TwitchAPIService implements OnModuleInit, OnModuleDestroy {
         return (await builder.send()).data;
     }
 
-    async getChannelByName(name: string) {
+    async getChannelByName(name: string): Promise<HelixUser> {
         const result = await this.searchChannels(name, { first: 1 });
 
-        if (result[0]?.broadcaster_login?.toLowerCase() !== name.toLowerCase())
+        if (result[0]?.display_name?.toLowerCase() !== name.toLowerCase())
             return null;
         else return result[0];
     }
 
-    async getStream(userId: string) {
+    async getStream(userId: string): Promise<HelixStream> {
         return (
             (
                 await new TwitchRequestBuilder()

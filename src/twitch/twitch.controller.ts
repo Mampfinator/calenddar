@@ -18,11 +18,12 @@ import { StreamReadFactory } from '../streams/db/stream-read.factory';
 import { VTuberEntityRepository } from '../vtubers/db/vtuber-entity.repository';
 import { ValidateObjectIdPipe } from '../util';
 import { EventSub } from './eventsub/eventsub.decorator';
-import { TwitchEventNotificationBase } from './eventsub/TwitchEventNotifications';
 import { TwitchEventSubGuard } from './eventsub/eventsub.guard';
 import { EventBus } from '@nestjs/cqrs';
 import { TwitchStreamLiveEvent } from './events/twitch-stream-live.event';
 import { TwitchStreamOfflineEvent } from './events/twitch-stream-offline.event';
+import { TwitchEventSubPayload } from './api/interfaces/TwitchEventSubPayload';
+import { TwitchEventFactory } from './eventsub/twitch-event.factory';
 
 @Controller({ path: 'twitch' })
 export class TwitchController {
@@ -35,6 +36,7 @@ export class TwitchController {
         private readonly streamReadFactory: StreamReadFactory,
         private readonly vtuberRepository: VTuberEntityRepository,
         private readonly eventBus: EventBus,
+        private readonly eventFactory: TwitchEventFactory
     ) {}
 
     @Get('live')
@@ -83,22 +85,14 @@ export class TwitchController {
     @HttpCode(200)
     @Header('Content-Type', 'text/plain')
     @UseGuards(TwitchEventSubGuard)
-    async eventSub<T extends TwitchEventNotificationBase>(
-        @EventSub() notification: T,
+    async eventSub(
+        @EventSub() notification: TwitchEventSubPayload<any> ,
     ) {
         if (typeof notification === 'string') {
-            this.logger.debug(`Sending back challenge ${notification}.`);
             return notification;
         }
-        let event;
-        switch (notification.type) {
-            case 'stream.online':
-                event = new TwitchStreamLiveEvent(notification);
-                break;
-            case 'stream.offline':
-                event = new TwitchStreamOfflineEvent(notification);
-        }
 
+        const event = this.eventFactory.create(notification);
         this.eventBus.publish(event);
     }
 }

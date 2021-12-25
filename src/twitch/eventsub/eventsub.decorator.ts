@@ -1,5 +1,4 @@
 import { createParamDecorator, ExecutionContext, Logger } from '@nestjs/common';
-import { TwitchEventNotificationFactory } from './TwitchEventNotificationFactory';
 
 const logger = new Logger('@EventSub');
 
@@ -11,11 +10,9 @@ export const EventSub = createParamDecorator(
         const { body, challenge } = req;
 
         if (challenge) {
-            logger.debug(
-                `Returning challenge ${challenge} from EventSub decorator.`,
-            );
             return challenge;
         }
-        return TwitchEventNotificationFactory.create(body);
+
+        return body;
     },
 );

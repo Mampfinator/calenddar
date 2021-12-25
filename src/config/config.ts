@@ -13,7 +13,10 @@ export interface YouTubeOptions {
     usableQuota: number;
 }
 
-export type LoggingOptions = ('log' | 'error' | 'warn' | 'debug' | 'verbose')[];
+export interface ThrottlerOptions {
+    ttl: number;
+    limit: number;
+}
 
 export default () => {
     const verifyEnv = (
@@ -55,10 +58,15 @@ export default () => {
     if (!yamlConfig.api.port)
         throw new TypeError('[config file] api.port not found!');
 
+    // less integral parts of the config get magic default values.
     if (!yamlConfig.youtube)
         yamlConfig.youtube = { quotaLimit: 10000, usableQuota: 1 };
     if (!yamlConfig.youtube.quotaLimit) yamlConfig.youtube.quotaLimit = 10000;
     if (!yamlConfig.youtube.usableQuota) yamlConfig.youtube.usableQuota = 1;
+
+    if (!yamlConfig.throttler) yamlConfig.throttler = {} as {[key: string]: number};
+    if (!yamlConfig.throttler.ttl) yamlConfig.throttler.ttl = 10;
+    if (!yamlConfig.throttler.limit) yamlConfig.throttler.limit = 10;
 
     return { ...envConfig, ...yamlConfig } as Record<string, any>;
 };

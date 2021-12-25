@@ -16,12 +16,12 @@ import { videoStatusResolver } from './streams/stream.read';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import config, { APIOptions } from './config/config';
+import config, { APIOptions, ThrottlerOptions } from './config/config';
 import { AppController } from './app.controller';
 import { RawBodyMiddleware } from './middleware/raw-body.middleware';
 import { JSONBodyMiddleware } from './middleware/json-body.middleware';
 import { WebeventsModule } from './webevents/webevents.module';
-
+import { ThrottlerModule } from "@nestjs/throttler";
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -49,6 +49,11 @@ import { WebeventsModule } from './webevents/webevents.module';
             resolvers: {
                 VideoStatus: videoStatusResolver,
             },
+        }),
+        ThrottlerModule.forRootAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: (configService: ConfigService) => configService.get<ThrottlerOptions>("throttler")
         }),
         VTubersModule,
         YouTubeModule,

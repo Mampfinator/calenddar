@@ -24,7 +24,7 @@ import { ValidateObjectIdPipe } from '../util';
 import { DeleteVTuberCommand } from './commands/delete-vtuber/delete-vtuber.command';
 import { VTuberDeletedEvent } from './events/vtuber-deleted.event';
 import { LiveVTubersQuery } from './queries/get-live.event';
-
+import { Throttle } from "@nestjs/throttler";
 @UseInterceptors(CacheInterceptor)
 @Controller('vtubers')
 export class VTubersController {
@@ -36,6 +36,7 @@ export class VTubersController {
 
     @Get()
     @CacheTTL(300)
+    @Throttle(1, 60)
     async getVTubers(): Promise<VTuber[]> {
         return this.queryBus.execute<VTubersQuery, VTuber[]>(
             new VTubersQuery(),
@@ -43,7 +44,6 @@ export class VTubersController {
     }
 
     @Get('live')
-    @CacheTTL(300)
     async getLiveVTubers() {
         return this.queryBus.execute<LiveVTubersQuery, VTuber[]>(
             new LiveVTubersQuery('all'),
@@ -106,7 +106,7 @@ export class VTubersController {
                     throw new NotFoundException(
                         `Could not find VTuber with ID ${id}.`,
                     );
-            }
+            } else throw e;
         }
 
         return await this.queryBus.execute<VTuberByIDQuery, VTuber>(

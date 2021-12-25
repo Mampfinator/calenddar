@@ -40,8 +40,6 @@ export class WebeventsService {
     /* ---------------------------------------------- */
     @OnEvent('webevents.youtube.upload')
     async handleYouTubeUpload(video: Stream) {
-        this.logger.debug(`Received youtube.upload webevent for ${video.id}`);
-
         const stream = {
             ...video,
             status: 'offline',
@@ -55,8 +53,6 @@ export class WebeventsService {
 
     @OnEvent('webevents.youtube.upcoming')
     async handleYouTubeUpcoming(video: Stream) {
-        this.logger.debug(`Received youtube.upcoming webevent for ${video.id}`);
-
         const stream = {
             ...video,
             status: 'upcoming',
@@ -70,8 +66,6 @@ export class WebeventsService {
 
     @OnEvent('webevents.youtube.live')
     async handleYouTubeLive(video: Stream) {
-        this.logger.debug(`Received youtube.live webevent for ${video.id}`);
-
         const stream = {
             ...video,
             status: 'live',
