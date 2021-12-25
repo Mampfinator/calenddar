@@ -11,6 +11,7 @@ import {
     UseInterceptors,
     CacheInterceptor,
     CacheTTL,
+    Query,
 } from '@nestjs/common';
 import { CommandBus, EventBus, QueryBus } from '@nestjs/cqrs';
 import { VTuber } from './vtuber.dto';
@@ -20,10 +21,10 @@ import { VTubersQuery } from './queries/vtubers.query';
 import { UpdateChannelsRequest } from './requests/update-channels-request.dto';
 import { VTuberByIDQuery } from './queries/vtuber-by-id.query';
 import { UpdateChannelsCommand } from './commands/update-channels/update-channels.command';
-import { ValidateObjectIdPipe } from '../util';
+import { StringToArrayPipe, ValidateObjectIdPipe } from '../util';
 import { DeleteVTuberCommand } from './commands/delete-vtuber/delete-vtuber.command';
 import { VTuberDeletedEvent } from './events/vtuber-deleted.event';
-import { LiveVTubersQuery } from './queries/get-live.event';
+import { LiveVTubersQuery } from './queries/get-live.query';
 import { Throttle } from "@nestjs/throttler";
 @UseInterceptors(CacheInterceptor)
 @Controller('vtubers')
@@ -44,9 +45,11 @@ export class VTubersController {
     }
 
     @Get('live')
-    async getLiveVTubers() {
+    async getLiveVTubers(
+        @Query("platform", StringToArrayPipe) platforms: string[]
+    ) {
         return this.queryBus.execute<LiveVTubersQuery, VTuber[]>(
-            new LiveVTubersQuery('all'),
+            new LiveVTubersQuery(platforms ?? "all"),
         );
     }
 

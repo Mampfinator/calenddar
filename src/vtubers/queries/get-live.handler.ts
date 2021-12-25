@@ -1,9 +1,10 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { StreamReadFactory } from '../../streams/db/stream-read.factory';
 import { StreamEntityRepository } from '../../streams/db/stream-entity.repository';
 import { VideoStatusEnum } from '../../streams/stream.read';
 import { VTuberEntityRepository } from '../db/vtuber-entity.repository';
 import { VTuber } from '../vtuber.dto';
-import { LiveVTubersQuery } from './get-live.event';
+import { LiveVTubersQuery } from './get-live.query';
 
 @QueryHandler(LiveVTubersQuery)
 export class LiveVTubersHandler
@@ -12,11 +13,13 @@ export class LiveVTubersHandler
     constructor(
         private readonly vtuberRepository: VTuberEntityRepository,
         private readonly streamRepository: StreamEntityRepository,
+        private readonly streamReadFactory: StreamReadFactory
     ) {}
 
     async execute(query: LiveVTubersQuery): Promise<VTuber[]> {
         const allVtubers = await this.vtuberRepository.findAll();
         const liveVtubers = [];
+
         for (const vtuber of allVtubers) {
             const ids = [];
             if (query.platforms.includes('youtube') && vtuber.getYoutubeId())
@@ -32,7 +35,7 @@ export class LiveVTubersHandler
                 .catch(() => {
                     /* ignore NotFound exceptions for streams; no stream = offline */
                 });
-            if (stream) liveVtubers.push(vtuber);
+            if (stream) liveVtubers.push({...vtuber, stream: this.streamReadFactory.createFromRoot(stream)});
         }
 
         return liveVtubers;
