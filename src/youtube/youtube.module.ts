@@ -38,7 +38,6 @@ export class YouTubeModule
     private _videoTimer: DynamicTimer;
     constructor(
         private readonly youtubeService: YouTubeService,
-        private readonly youtubeApiService: YouTubeAPIService,
         private readonly youtubeEventsubService: YouTubeEventSubService,
         private readonly configService: ConfigService,
     ) {}
@@ -72,7 +71,7 @@ export class YouTubeModule
 
         this._videoTimer = new DynamicTimer(
             async () => {
-                const amount = (
+                const totalVideos = (
                     await this.youtubeService.streamRepository.findNonOffline(
                         'youtube',
                     )
@@ -80,12 +79,17 @@ export class YouTubeModule
 
                 const { quotaLimit, usableQuota } =
                     this.configService.get<YouTubeOptions>('youtube');
-                const interval =
-                    ((24 * 60 * 60 * 1000) / (quotaLimit * usableQuota)) *
-                    Math.ceil(amount / 50);
-                return interval;
+                
+                    
+                    const interval =
+                    ((24 * 60 * 60 * 1000) / (quotaLimit * usableQuota)) * // figure out how many requests we can do per day
+                    Math.ceil(totalVideos / 50);    // figure out how many batches of requests we'll need to do at the current rate
+                
+                    return interval;
             },
-            () => this.youtubeService.syncVideoStates(),
+            async () => {
+                this.youtubeService.syncVideoStates().catch(error => this.logger.error(error));
+            },
         );
 
         await this._videoTimer.start();
