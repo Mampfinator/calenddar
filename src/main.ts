@@ -6,12 +6,14 @@ import { ConfigService } from '@nestjs/config';
 import { APIOptions } from './config/config';
 import { Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 (async () => {
     const logger = new Logger(`Main`);
     const app = await NestFactory.create<NestExpressApplication>(AppModule, {
         bodyParser: false,
     });
+    app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
     app.useWebSocketAdapter(new WsAdapter(app));
     app.disable('x-powered-by');
 
