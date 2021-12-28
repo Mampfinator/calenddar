@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { HttpException, Logger } from '@nestjs/common';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { StreamEntityRepository } from '../../streams/db/stream-entity.repository';
@@ -24,7 +24,12 @@ export class TwitchStreamOfflineHandler
         const stream = await this.streamRepository.findOneByQuery({
             channelId: broadcaster_user_id,
             status: VideoStatusEnum.Live
+        })
+        .catch(error => {
+            if (error instanceof HttpException) this.logger.error(error);
         });
+
+        if (!stream) return;
 
         stream.status = VideoStatusEnum.Offline;
 

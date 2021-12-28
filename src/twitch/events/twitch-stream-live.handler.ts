@@ -26,8 +26,8 @@ export class TwitchStreamLiveHandler
         this.logger.log(`Handling TwitchStreamLiveEvent for ${broadcaster_user_id} (${id}).`);
 
         const stream = await this.apiService.getStream(broadcaster_user_id);
-        if (!(stream.id === id)) return;
-        if (await this.streamRepository.findByStreamId(id)) return; 
+        if (!(stream?.id === id)) return;
+        if (await this.streamRepository.findByStreamId(id).catch()) return; 
 
         const {title, started_at} = stream;
 
