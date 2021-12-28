@@ -28,12 +28,12 @@ export class UpdateChannelsHandler
         );
         if (!twitchId && twitchName) twitchId = (await this.twitchApiService.getChannelByName(twitchName)).id;
         
-        if (vtuber.getYoutubeId() !== youtubeId) {
+        if (youtubeId && vtuber.getYoutubeId() !== youtubeId) {
             vtuber.setChannelId('youtube', youtubeId);
             await this.youtubeService.syncFeedVideoState(youtubeId);
             await this.youtubeEventsubService.subscribe(youtubeId);
         }
-        if (vtuber.getTwitchId() !== twitchId) {
+        if (twitchId && vtuber.getTwitchId() !== twitchId) {
             vtuber.setChannelId('twitch', twitchId);
             await this.twitchService.syncUserState(twitchId);
             await this.twitchEventsubService.subscribe(twitchId);
