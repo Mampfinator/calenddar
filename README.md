@@ -56,5 +56,5 @@ Twitcasting:
 For a detailed look at the REST API, either check the source or [read the guide](./guides/REST.md).
 Bad.
 
-## GraphQL Coverage
-Miserable.
+## GraphQL
+Check the [Playground](https://api.calenddar.de/graphql) for documentation, or use a GraphQL introspection tool of your choice!
