@@ -51,6 +51,7 @@
     "rss-parser": "^3.12.0",
     "rxjs": "^7.2.0",
     "swagger-ui-express": "^4.3.0",
+    "ts-prime": "^1.0.0",
     "winston-mongodb": "^5.0.7"
   },
   "devDependencies": {
