@@ -12,6 +12,7 @@ import { CommunityPostEventHandlers } from "./events";
 import { VTubersModule } from "../../vtubers/vtubers.module";
 import { CommunityPostSchema } from "./db/communitypost.schema";
 import { CommunityPostReadRepository } from "./db/communitypost-read.repository";
+import { CommunityPostResolver } from "./communitypost.resolvers";
 
 @Module({
     imports: [
@@ -30,7 +31,8 @@ import { CommunityPostReadRepository } from "./db/communitypost-read.repository"
         CommunityPostEntityRepository,
         CommunityPostSchemaFactory,
         CommunityPostReadRepository,
-        ...CommunityPostEventHandlers
+        ...CommunityPostEventHandlers,
+        CommunityPostResolver
     ],
     exports: [
         YouTubeCommunityPostsService
