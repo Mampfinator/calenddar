@@ -25,9 +25,23 @@ export class VTuberEntityRepository extends BaseEntityRepository<
         });
     }
 
+    async getAllYouTubeIds(): Promise<Set<string>> {
+        const vtubers = await this.find({
+            youtubeId: {$exists: true}
+        });
+        return new Set(vtubers.map(v => v.getYoutubeId()));
+    }
+
     async findByTwitchId(id: string): Promise<VTuberRoot[]> {
         return this.find({
             twitchId: id,
         });
+    }
+
+    async getAllTwitchIds(): Promise<Set<string>> {
+        const vtubers = await this.find({
+            twitchId: {$exists: true}
+        });
+        return new Set(vtubers.map(v => v.getTwitchId()));
     }
 }
