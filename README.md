@@ -30,20 +30,20 @@ A realtime (WebSocket & Webhook), RESTful & GraphQL multi-platform VTuber API.
   - ~~finish platform integration for Twitch & YouTube properly~~
   - ~~finish WebEvents implementation for platform events (also come up with proper way of fitting them into a uniform schema)~~
   - add Twitcasting & Twitter Space support, potentially Niconico & Bilibili as well
-  - add YouTube community posts
+  - ~~add YouTube community posts~~
   
 ## Platform Support
 Twitch: 
   - Internal structures ✓
   - EventSub ✓
-  - Twitch API ✓ (missing endpoints)
-  - CalenDDar API ✗ (missing most functionality)
+  - Twitch API ✓ (all relevant endpoints done)
+  - CalenDDar API ✓
 
 YouTube:
   - Internal structures ✓
   - EventSub ✓ (subscription refresh currently in testing)
   - YouTube API ✓ (mostly done)
-  - CalenDDar API ✗
+  - CalenDDar API ✓ (/eventsub, /post(s) done)
 
 Twitcasting:
   - Interanl structures ✗
@@ -51,10 +51,13 @@ Twitcasting:
   - Twitcasting API ✗
   - CalenDDar API ✗
 
+Twitter Space:
+  Nothing yet :POLmao:
 
 ## REST API Coverage
 For a detailed look at the REST API, either check the source or [read the guide](./guides/REST.md).
-Bad.
+
+Bad & largely undocumented.
 
 ## GraphQL
 Check the [Playground](https://api.calenddar.de/graphql) for documentation, or use a GraphQL introspection tool of your choice!
