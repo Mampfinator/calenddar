@@ -26,7 +26,7 @@
 A realtime (WebSocket & Webhook), RESTful & GraphQL multi-platform VTuber API. 
 
 ## TODO:
-  - implement proper authentication mechanism for protected endpoints (adding/removing/updating VTubers, ...)
+  - ~~implement proper authentication mechanism for protected endpoints (adding/removing/updating VTubers, ...)~~
   - ~~finish platform integration for Twitch & YouTube properly~~
   - ~~finish WebEvents implementation for platform events (also come up with proper way of fitting them into a uniform schema)~~
   - add Twitcasting & Twitter Space support, potentially Niconico & Bilibili as well
@@ -56,5 +56,5 @@ Twitcasting:
 For a detailed look at the REST API, either check the source or [read the guide](./guides/REST.md).
 Bad.
 
-## GraphQL Coverage
-Miserable.
+## GraphQL
+Check the [Playground](https://api.calenddar.de/graphql) for documentation, or use a GraphQL introspection tool of your choice!
