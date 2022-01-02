@@ -5,6 +5,7 @@ import { StreamSchema } from './stream.schema';
 import { ObjectId } from 'mongodb';
 import { StreamSchemaFactory } from './stream-schema.factory';
 import { GenericStream } from '../GenericStream';
+import { VideoStatusEnum } from '../stream.read';
 
 @Injectable()
 export class StreamReadRepository {
@@ -44,5 +45,12 @@ export class StreamReadRepository {
         return streams.map((stream) =>
             this.schemaFactory.createFromSchema(stream),
         );
+    }
+
+    async findByStatus(status: VideoStatusEnum): Promise<GenericStream[]> {
+        const streams = await this.streamModel.find({
+            status
+        });
+        return streams.map(stream => this.schemaFactory.createFromSchema(stream));
     }
 }
