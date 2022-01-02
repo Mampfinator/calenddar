@@ -23,7 +23,7 @@
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
 # Calenddar
-A realtime (WebSocket & Webhook), RESTful & GraphQL multi-platform VTuber API. 
+A realtime (WebSocket & Webhook), RESTful & GraphQL multi-platform VTuber API. A running version can be found over at https://api.calenddar.de.
 
 ## TODO:
   - ~~implement proper authentication mechanism for protected endpoints (adding/removing/updating VTubers, ...)~~
