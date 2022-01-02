@@ -18,7 +18,7 @@ import { videoStatusResolver } from './streams/stream.read';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import config, { APIOptions, ThrottlerOptions } from './config/config';
+import config, { APIOptions, GraphQLOptions, ThrottlerOptions } from './config/config';
 import { AppController } from './app.controller';
 import { RawBodyMiddleware } from './middleware/raw-body.middleware';
 import { JSONBodyMiddleware } from './middleware/json-body.middleware';
@@ -52,11 +52,17 @@ import TransportStream from 'winston-transport';
             verboseMemoryLeak: true,
             ignoreErrors: false,
         }),
-        GraphQLModule.forRoot({
-            autoSchemaFile: true,
-            resolvers: {
-                VideoStatus: videoStatusResolver,
-            },
+        GraphQLModule.forRootAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: (configService: ConfigService) => ({
+                autoSchemaFile: true,
+                resolvers: {
+                    VideoStatus: videoStatusResolver,
+                },
+                playground: configService.get<GraphQLOptions>("graphql")?.playground ?? false,
+                introspection: configService.get<GraphQLOptions>("graphql")?.introspection ?? false,
+            })
         }),
         ThrottlerModule.forRootAsync({
             imports: [ConfigModule],

@@ -18,6 +18,11 @@ export interface ThrottlerOptions {
     limit: number;
 }
 
+export interface GraphQLOptions {
+    playground?: boolean;
+    introspection?: boolean;
+}
+
 export default () => {
     const verifyEnv = (
         envConfig: dotenv.DotenvParseOutput,
