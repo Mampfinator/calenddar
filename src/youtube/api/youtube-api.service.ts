@@ -25,8 +25,8 @@ export class YouTubeAPIService {
                 .setUrl(Videos)
                 .setParameter('id', id)
                 .setPart(['liveStreamingDetails', 'id', 'snippet'])
-                .send()
-        ).items[0];
+                .send().catch(e => this.logger.error(e))
+        )?.items[0];
     }
 
     async getVideosByIds(...ids: string[]): Promise<YouTubeV3Video[]> {
@@ -39,15 +39,22 @@ export class YouTubeAPIService {
 
         const items: YouTubeV3Video[] = [];
         for (const idBatch of idBatches) {
+            let hasFailed = false;
             const batchItems: YouTubeV3Video[] = (
                 await new YouTubeRequestBuilder()
                     .setApiKey(this.apiKey)
                     .setUrl(Videos)
                     .setParameter('id', idBatch.join(','))
                     .setPart(['liveStreamingDetails', 'id', 'snippet'])
-                    .send()
-            ).items;
-
+                    .send().catch(e => {
+                        this.logger.error(e);
+                        hasFailed = true;
+                    })
+            )?.items ?? [];
+            
+            // temporary solution until I figure out why YouTube keeps throwing Forbidden responses at me.
+            if (hasFailed) break;
+            
             // see if any videos we wanted to request are missing from the response, and add a minimum amount of data to indicate that to the return.
             const idSet = new Set<string>(idBatch);
             for (const item of batchItems) idSet.delete(item.id);
