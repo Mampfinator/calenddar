@@ -24,7 +24,8 @@ export class DynamicTimer {
         };
     }
 
-    async start() {
+    async start(startImmediate = true) {
+        if (startImmediate) await this._callback();
         this._timeoutId = setTimeout(
             this._internalCallback,
             await this._intervalGenerator(),
