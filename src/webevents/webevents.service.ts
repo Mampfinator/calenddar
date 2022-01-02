@@ -5,6 +5,7 @@ import { Stream } from '../streams/stream.read';
 import { WebhooksService } from '../webhooks/webhooks.service';
 import { WebsocketService } from '../websocket/websocket.service';
 import { VTuberEntityRepository } from '../vtubers/db/vtuber-entity.repository';
+import { CommunityPost } from '../youtube/community-posts/communitypost.dto';
 @Injectable()
 export class WebeventsService {
     private readonly logger = new Logger(WebeventsService.name);
@@ -88,6 +89,14 @@ export class WebeventsService {
             await this.vtuberRepository.findByYoutubeId(stream.channelId)
         ).map((v) => v.getId());
         await this.send('offline', vtubers, 'youtube', stream);
+    }
+
+    @OnEvent("webevents.youtube.post")
+    async handleYouTubePost(post: CommunityPost) {
+        const vtubers = (
+            await this.vtuberRepository.findByYoutubeId(post.channelId)
+        ).map(v => v.getId());
+        await this.send("post", vtubers, "youtube", post);
     }
 
     /* ---------------------------------------------- */

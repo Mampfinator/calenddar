@@ -18,6 +18,7 @@ import { YouTubeService } from './youtube.service';
 import { ConfigService } from '@nestjs/config';
 import { YouTubeOptions } from 'src/config/config';
 import { YouTubeEventFactory } from './youtube-event.factory';
+import { YouTubeCommunityPostsModule } from './community-posts/youtube-community-posts.module';
 @Module({
     imports: [
         CqrsModule,
@@ -25,6 +26,7 @@ import { YouTubeEventFactory } from './youtube-event.factory';
         forwardRef(() => StreamsModule),
         YouTubeAPIModule,
         YouTubeEventSubModule,
+        YouTubeCommunityPostsModule
     ],
     providers: [YouTubeService, YouTubeEventFactory],
     controllers: [YouTubeController],
