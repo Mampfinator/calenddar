@@ -36,22 +36,17 @@ A realtime (WebSocket & Webhook), RESTful & GraphQL multi-platform VTuber API. A
 Twitch: 
   - Basic functionality ✓
   - Realtime API ✓
-  - Twitch API ✓ (all relevant endpoints done)
-  - CalenDDar API ✓
+  - REST API ✓ (well, somewhat)
+  - GraphQL API ✓ (integrated in `streams` API)
 
 YouTube:
   - Basic functionality ✓
   - Realtime API ✓ 
-  - YouTube API ✓ (mostly done)
-  - CalenDDar API ✓ (/post(s) for an actual YouTube Community POST API)
+  - REST API ✓ (/post(s) for an actual YouTube Community POST API)
+  - GraphQL API ✓ (integrated in `streams` API)
 
 Twitcasting:
-  - Basic functionality ✗
-  - Realtime API ✗
-  - Twitcasting API ✗
-  - CalenDDar API ✗
-
-Twitter Space:
+Twitter Spaces:
   - in planning :PolFade:
 
 ## REST API Coverage
