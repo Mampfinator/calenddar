@@ -23,38 +23,36 @@
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
 # Calenddar
-A realtime (WebSocket & Webhook), RESTful & GraphQL multi-platform VTuber API. 
+A realtime (WebSocket & Webhook), RESTful & GraphQL multi-platform VTuber API. A running version can be found over at https://api.calenddar.de.
 
 ## TODO:
   - ~~implement proper authentication mechanism for protected endpoints (adding/removing/updating VTubers, ...)~~
   - ~~finish platform integration for Twitch & YouTube properly~~
   - ~~finish WebEvents implementation for platform events (also come up with proper way of fitting them into a uniform schema)~~
   - add Twitcasting & Twitter Space support, potentially Niconico & Bilibili as well
-  - add YouTube community posts
+  - ~~add YouTube community posts~~
   
 ## Platform Support
 Twitch: 
-  - Internal structures ✓
-  - EventSub ✓
-  - Twitch API ✓ (missing endpoints)
-  - CalenDDar API ✗ (missing most functionality)
+  - Basic functionality ✓
+  - Realtime API ✓
+  - REST API ✓ (well, somewhat)
+  - GraphQL API ✓ (integrated in `streams` API)
 
 YouTube:
-  - Internal structures ✓
-  - EventSub ✓ (subscription refresh currently in testing)
-  - YouTube API ✓ (mostly done)
-  - CalenDDar API ✗
+  - Basic functionality ✓
+  - Realtime API ✓ 
+  - REST API ✓ (/post(s) for an actual YouTube Community POST API)
+  - GraphQL API ✓ (integrated in `streams` API)
 
 Twitcasting:
-  - Interanl structures ✗
-  - EventSub ✗
-  - Twitcasting API ✗
-  - CalenDDar API ✗
-
+Twitter Spaces:
+  - in planning :PolFade:
 
 ## REST API Coverage
 For a detailed look at the REST API, either check the source or [read the guide](./guides/REST.md).
-Bad.
+
+Bad & largely undocumented.
 
 ## GraphQL
 Check the [Playground](https://api.calenddar.de/graphql) for documentation, or use a GraphQL introspection tool of your choice!
