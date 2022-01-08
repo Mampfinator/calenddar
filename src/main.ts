@@ -1,9 +1,49 @@
+// TODO: clean up folder structure
+/*
+|-- src
+    |-- core
+        |-- streams
+        |-- vtubers
+        |-- database
+        |-- webevents
+            |-- websocket
+            |-- webhook
+        |-- config
+    |-- common
+        |-- decorators
+        |-- middleware
+        |-- guards
+        |-- interceptors
+    |-- platform
+        |-- youtube
+            |-- api
+            |-- community-posts
+            |-- events
+            |-- eventsub
+        |-- twitch
+            |-- api
+            |-- events
+            |-- eventsub
+        |-- twitcasting
+            |-- api
+            |-- events
+            |-- eventsub
+        |-- twitter
+            |-- api
+            |-- events
+            |-- eventsub (?)
+|-- config
+    |-- production.config.yaml
+    |-- development.config.yaml
+|-- test
+
+*/
 import { WsAdapter } from '@nestjs/platform-ws';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
-import { APIOptions } from './config/config';
+import { APIOptions } from './core/config/config';
 import { Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';

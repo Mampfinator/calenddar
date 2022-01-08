@@ -1,6 +1,5 @@
 import {
     Inject,
-    Logger,
     LoggerService,
     MiddlewareConsumer,
     Module,
@@ -8,24 +7,25 @@ import {
     OnApplicationBootstrap,
 } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { VTubersModule } from './vtubers/vtubers.module';
-import { YouTubeModule } from './youtube/youtube.module';
-import { TwitchModule } from './twitch/twitch.module';
-import { StreamsModule } from './streams/streams.module';
+import { VTubersModule } from './core/vtubers/vtubers.module';
+import { YouTubeModule } from './platform/youtube/youtube.module';
+import { TwitchModule } from './platform/twitch/twitch.module';
+import { StreamsModule } from './core/streams/streams.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { GraphQLModule } from '@nestjs/graphql';
-import { videoStatusResolver } from './streams/stream.read';
+import { videoStatusResolver } from './core/streams/stream.read';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import config, { APIOptions, GraphQLOptions, ThrottlerOptions } from './config/config';
+import config, { APIOptions, GraphQLOptions, ThrottlerOptions } from './core/config/config';
 import { AppController } from './app.controller';
-import { RawBodyMiddleware } from './middleware/raw-body.middleware';
-import { JSONBodyMiddleware } from './middleware/json-body.middleware';
-import { WebeventsModule } from './webevents/webevents.module';
+import { RawBodyMiddleware } from './common/middleware/raw-body.middleware';
+import { JSONBodyMiddleware } from './common/middleware/json-body.middleware';
+import { WebeventsModule } from './core/webevents/webevents.module';
 import { ThrottlerModule } from "@nestjs/throttler";
 import { APP_GUARD } from '@nestjs/core';
-import { ProtectedGuard } from './guards/protected-endpoint.guard';
+import { ProtectedGuard } from './common/guards/protected-endpoint.guard';
+import { CacheModule } from '@nestjs/common';
 import { WinstonModule, utilities as nestWinstonUtils, WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import {transports as winstonTransports, format} from "winston";
 import "winston-mongodb"; 
@@ -107,6 +107,7 @@ import TransportStream from 'winston-transport';
                 }
             }
         }),
+        CacheModule.register({isGlobal: true}),
         VTubersModule,
         YouTubeModule,
         TwitchModule,

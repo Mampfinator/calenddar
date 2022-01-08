@@ -1,0 +1,15 @@
+api:
+  host: "your-domain.edu" # your domain/your host's IP to receive webhooks on
+  port: 3000              # the port to pass to app#listen
+
+throttler:
+  ttl: 10                 # default time to live for cached request IPs
+  limit: 10               # requests/ttl allowed before too many requests is returned.
+
+youtube:
+  quotaLimit: 10000       # daily YouTube API quota limit; used to determine polling intervals
+  usableQuota: 1          # percentage of the above quota the interval is allowed to use.
+
+graphql:
+  introspection: true     # enable/disable introspection requests
+  playground: true        # enable/disable playground (GET /graphql by default)

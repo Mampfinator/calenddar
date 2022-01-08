@@ -37,14 +37,17 @@ lerna-debug.log*
 
 # .env files
 *.env
+!.example.env
 
 # config
-src/config/*
-!src/config/config.ts
-!src/config/config.example.yaml
+config.production.yaml
+config.development.yaml
 
 # pm2
 ecosystem.config.js
 
 # debug stuff
 /debug
+
+
+*.tsbuildinfo
