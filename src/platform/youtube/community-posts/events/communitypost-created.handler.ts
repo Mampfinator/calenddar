@@ -13,7 +13,6 @@ export class CommunityPostCreatedHandler
         private readonly eventEmitter: EventEmitter2,
     ) {}
     handle({ post }: CommunityPostCreatedEvent) {
-        // TODO: let webevents know that a new post has been detected.
         if (this.communityPostService.hasFetchedInitial())
             this.eventEmitter.emit(
                 'webevents.youtube.post',

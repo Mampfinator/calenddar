@@ -22,20 +22,4 @@ export class TwitchStreamFactory {
             VideoStatusEnum.Live,
         );
     }
-
-    // TODO: find out if it's still actually needed...?
-    async updateFromHelixStream(helixStream, stream: GenericStream) {
-        const changes = {};
-        const applyChange = (helixField: string, streamField: string): void => {
-            if (helixStream[helixField] != stream[streamField]) {
-                stream[streamField] = helixStream[helixField];
-                changes[streamField] = helixField;
-            }
-        };
-        applyChange('title', 'title');
-
-        await this.streamRepository.findOneAndReplaceById(stream._id, stream);
-
-        return changes;
-    }
 }

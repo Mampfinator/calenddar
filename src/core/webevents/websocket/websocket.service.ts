@@ -11,7 +11,7 @@ export class WebsocketService {
     constructor(public readonly eventEmitter: EventEmitter2) {}
 
     broadcast(broadcast: Record<string, any>) {
-        // TODO: look into using a faster stringify implementation
+        // FIXME: look into using a faster stringify implementation
         const message = JSON.stringify(broadcast);
         for (const socket of this.sockets) {
             socket.send(message);

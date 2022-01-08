@@ -45,7 +45,6 @@ export class YouTubeScraper {
 
         const { backstageAttachment } = rawPost;
         if (backstageAttachment) {
-            // TODO: find the proper content of backstageMultiImageRenderer and deal with it :dead:
             const {
                 backstageImageRenderer: imageRenderer,
                 pollRenderer,
@@ -129,7 +128,7 @@ export class YouTubeScraper {
     }
 
     public async fetchPost(id: string): Promise<CommunityPost> {
-        // TODO: find out if there's a convenient way of parsing a channel's ID from initialData.
+        // FIXME: find out if there's a convenient way of parsing a channel's ID from initialData.
 
         const initialData = this.parseYtInitialData(
             await axios
