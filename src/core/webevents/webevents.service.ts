@@ -22,7 +22,11 @@ export class WebeventsService {
         platform: string,
         payload: object,
     ) {
-        this.logger.debug(`Sending event "${event}" (platform: ${platform}, vtubers: [${vtuberIds.join(", ")}]) to all clients.`);
+        this.logger.debug(
+            `Sending event "${event}" (platform: ${platform}, vtubers: [${vtuberIds.join(
+                ', ',
+            )}]) to all clients.`,
+        );
         const webevent = {
             event,
             vtubers: vtuberIds,
@@ -91,12 +95,12 @@ export class WebeventsService {
         await this.send('offline', vtubers, 'youtube', stream);
     }
 
-    @OnEvent("webevents.youtube.post")
+    @OnEvent('webevents.youtube.post')
     async handleYouTubePost(post: CommunityPost) {
         const vtubers = (
             await this.vtuberRepository.findByYoutubeId(post.channelId)
-        ).map(v => v.getId());
-        await this.send("post", vtubers, "youtube", post);
+        ).map((v) => v.getId());
+        await this.send('post', vtubers, 'youtube', post);
     }
 
     /* ---------------------------------------------- */

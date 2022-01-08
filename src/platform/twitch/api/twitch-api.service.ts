@@ -47,9 +47,9 @@ export class TwitchAPIService implements OnModuleInit, OnModuleDestroy {
                 await new TwitchRequestBuilder()
                     .setUrl(TwitchOAuth2URL)
                     .setMethod('POST')
-                    .setParameter('client_id', this.clientId)
-                    .setParameter('client_secret', this.secret)
-                    .setParameter('grant_type', 'client_credentials')
+                    .addParam('client_id', this.clientId)
+                    .addParam('client_secret', this.secret)
+                    .addParam('grant_type', 'client_credentials')
                     .send();
             this.accessToken = access_token;
 
@@ -92,9 +92,9 @@ export class TwitchAPIService implements OnModuleInit, OnModuleDestroy {
                 .setMethod('POST')
                 .setToken(this.accessToken)
                 .setClientId(this.clientId)
-                .setData({
+                .setBody({
                     type,
-                    version: 1,
+                    version: '1',
                     condition: { broadcaster_user_id: userId },
                     transport: {
                         method: 'webhook',
@@ -116,18 +116,26 @@ export class TwitchAPIService implements OnModuleInit, OnModuleDestroy {
             .setMethod('DELETE')
             .setToken(this.accessToken)
             .setClientId(this.clientId)
-            .setParameter('id', id)
-            .send(true, true);
+            .addParam('id', id)
+            .send();
     }
 
     async deleteAllSubscriptions() {
-        const subscriptions = await this.getSubscriptions()
+        const subscriptions = await this.getSubscriptions();
         const deletionPromises = [];
         for (const { id } of subscriptions) {
             deletionPromises.push(this.deleteSubscription(id));
         }
-        const failures = (await Promise.all(deletionPromises)).filter(({status}) =>  status !== 204);
-        this.logger.log(`Deleted ${subscriptions.length - failures.length} subscriptions successfully. ${failures.length > 0 ? `Failed deleting ${failures.length}.`: ""}`);
+        const failures = (await Promise.all(deletionPromises)).filter(
+            ({ status }) => status !== 204,
+        );
+        this.logger.log(
+            `Deleted ${
+                subscriptions.length - failures.length
+            } subscriptions successfully. ${
+                failures.length > 0 ? `Failed deleting ${failures.length}.` : ''
+            }`,
+        );
     }
 
     async getChannelInformation(id: string): Promise<HelixChannelInformation> {
@@ -137,7 +145,7 @@ export class TwitchAPIService implements OnModuleInit, OnModuleDestroy {
                 .setMethod('GET')
                 .setToken(this.accessToken)
                 .setClientId(this.clientId)
-                .setParameter('broadcaster_id', id)
+                .addParam('broadcaster_id', id)
                 .send()
         ).data[0];
     }
@@ -151,9 +159,14 @@ export class TwitchAPIService implements OnModuleInit, OnModuleDestroy {
             .setMethod('GET')
             .setToken(this.accessToken)
             .setClientId(this.clientId)
-            .setParameter('query', query);
+            .addParam('query', query);
 
-        if (filter) builder.setParameters(filter);
+        if (filter) {
+            const { first, after, live_only } = filter;
+            if (first) builder.addParam('first', String(first));
+            if (after) builder.addParam('after', after);
+            if (live_only) builder.addParam('live_only', String(live_only));
+        }
 
         return (await builder.send()).data;
     }
@@ -174,7 +187,7 @@ export class TwitchAPIService implements OnModuleInit, OnModuleDestroy {
                     .setMethod('GET')
                     .setToken(this.accessToken)
                     .setClientId(this.clientId)
-                    .setParameter('user_id', userId)
+                    .addParam('user_id', userId)
                     .send()
             ).data[0] ?? null
         );

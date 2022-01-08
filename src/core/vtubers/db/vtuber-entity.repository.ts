@@ -27,9 +27,9 @@ export class VTuberEntityRepository extends BaseEntityRepository<
 
     async getAllYouTubeIds(): Promise<Set<string>> {
         const vtubers = await this.find({
-            youtubeId: {$exists: true}
+            youtubeId: { $exists: true },
         });
-        return new Set(vtubers.map(v => v.getYoutubeId()));
+        return new Set(vtubers.map((v) => v.getYoutubeId()));
     }
 
     async findByTwitchId(id: string): Promise<VTuberRoot[]> {
@@ -40,9 +40,9 @@ export class VTuberEntityRepository extends BaseEntityRepository<
 
     async getAllTwitchIds(): Promise<Set<string>> {
         const vtubers = await this.find({
-            twitchId: {$exists: true}
+            twitchId: { $exists: true },
         });
-        return new Set(vtubers.map(v => v.getTwitchId()));
+        return new Set(vtubers.map((v) => v.getTwitchId()));
     }
 
     async findByTwittterId(id: string): Promise<VTuberRoot[]> {
@@ -53,8 +53,8 @@ export class VTuberEntityRepository extends BaseEntityRepository<
 
     async getAllTwitterIds(): Promise<Set<string>> {
         const vtubers = await this.find({
-            twitterId: {$exists: true}
+            twitterId: { $exists: true },
         });
-        return new Set(vtubers.map(v => v.getTwitterId()));
+        return new Set(vtubers.map((v) => v.getTwitterId()));
     }
 }

@@ -13,3 +13,6 @@ youtube:
 graphql:
   introspection: true     # enable/disable introspection requests
   playground: true        # enable/disable playground (GET /graphql by default)
+
+
+platforms: ["twitch", "youtube", "twitter", "twitcasting"] # set the active platforms.

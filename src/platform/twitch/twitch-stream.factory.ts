@@ -11,7 +11,9 @@ export class TwitchStreamFactory {
         private readonly streamFactory: StreamFactory,
         private readonly streamRepository: StreamEntityRepository,
     ) {}
-    async createFromHelixStream(helixStream: HelixStream): Promise<GenericStream> {
+    async createFromHelixStream(
+        helixStream: HelixStream,
+    ): Promise<GenericStream> {
         return await this.streamFactory.create(
             helixStream.id,
             helixStream.user_id,

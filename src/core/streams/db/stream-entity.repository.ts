@@ -20,7 +20,9 @@ export class StreamEntityRepository extends BaseEntityRepository<
     }
 
     async findByStreamId(streamId: string) {
-        return this.findOne({streamId}).catch(() => {/**/});
+        return this.findOne({ streamId }).catch(() => {
+            /**/
+        });
     }
 
     async findByStatus(status: VideoStatusEnum, platform?: string) {

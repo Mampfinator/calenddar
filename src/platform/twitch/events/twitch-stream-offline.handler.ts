@@ -12,28 +12,31 @@ export class TwitchStreamOfflineHandler
     private readonly logger = new Logger(TwitchStreamOfflineHandler.name);
     constructor(
         private readonly streamRepository: StreamEntityRepository,
-        private readonly eventEmitter: EventEmitter2
+        private readonly eventEmitter: EventEmitter2,
     ) {}
 
-    async handle({event}: TwitchStreamOfflineEvent) {
-        const {event: eventData} = event;
-        const {broadcaster_user_id} = eventData;
+    async handle({ event }: TwitchStreamOfflineEvent) {
+        const { event: eventData } = event;
+        const { broadcaster_user_id } = eventData;
 
-        this.logger.log(`Handling TwitchStreamLiveEvent for ${broadcaster_user_id}.`);
+        this.logger.log(
+            `Handling TwitchStreamLiveEvent for ${broadcaster_user_id}.`,
+        );
 
-        const stream = await this.streamRepository.findOneByQuery({
-            channelId: broadcaster_user_id,
-            status: VideoStatusEnum.Live
-        })
-        .catch(error => {
-            if (error instanceof HttpException) this.logger.error(error);
-        });
+        const stream = await this.streamRepository
+            .findOneByQuery({
+                channelId: broadcaster_user_id,
+                status: VideoStatusEnum.Live,
+            })
+            .catch((error) => {
+                if (error instanceof HttpException) this.logger.error(error);
+            });
 
         if (!stream) return;
 
         stream.status = VideoStatusEnum.Offline;
 
         await this.streamRepository.findOneAndReplaceById(stream._id, stream);
-        this.eventEmitter.emit("webevents.twitch.offline", stream);
+        this.eventEmitter.emit('webevents.twitch.offline', stream);
     }
 }

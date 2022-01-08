@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { WebsocketBroadcast } from './dto/websocket-broadcast.dto';
 import { EventEmitter2 } from 'eventemitter2';
 import { WebSocket } from 'ws';
 import { Webevent } from 'src/core/webevents/interfaces/webevent.dto';
@@ -11,7 +10,8 @@ export class WebsocketService {
 
     constructor(public readonly eventEmitter: EventEmitter2) {}
 
-    broadcast(broadcast: WebsocketBroadcast<any>) {
+    broadcast(broadcast: Record<string, any>) {
+        // TODO: look into using a faster stringify implementation
         const message = JSON.stringify(broadcast);
         for (const socket of this.sockets) {
             socket.send(message);

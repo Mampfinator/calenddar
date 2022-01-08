@@ -18,7 +18,7 @@ export class UpdateChannelsHandler
         private readonly twitchService: TwitchService,
         private readonly twitchEventsubService: TwitchEventSubService,
         private readonly youtubeService: YouTubeService,
-        private readonly youtubeEventsubService: YouTubeEventSubService
+        private readonly youtubeEventsubService: YouTubeEventSubService,
     ) {}
 
     async execute({ updateChannelsRequest }: UpdateChannelsCommand) {
@@ -26,8 +26,11 @@ export class UpdateChannelsHandler
         const vtuber = await this.eventPublisher.mergeObjectContext(
             await this.vtuberEntityRepository.findOneById(id),
         );
-        if (!twitchId && twitchName) twitchId = (await this.twitchApiService.getChannelByName(twitchName)).id;
-        
+        if (!twitchId && twitchName)
+            twitchId = (
+                await this.twitchApiService.getChannelByName(twitchName)
+            ).id;
+
         if (youtubeId && vtuber.getYoutubeId() !== youtubeId) {
             vtuber.setChannelId('youtube', youtubeId);
             await this.youtubeService.syncFeedVideoState(youtubeId);

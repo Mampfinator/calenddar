@@ -27,7 +27,9 @@ export class YouTubeEventFactory {
                         if (newValue === VideoStatusEnum.Live)
                             return new YouTubeStreamLiveEvent(video, true);
                         if (newValue === VideoStatusEnum.Offline)
-                            return new YouTubeStreamReservationRemovedEvent(video);
+                            return new YouTubeStreamReservationRemovedEvent(
+                                video,
+                            );
                 }
             },
         )

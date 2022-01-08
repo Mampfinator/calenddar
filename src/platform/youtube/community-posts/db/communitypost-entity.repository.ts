@@ -13,16 +13,16 @@ export class CommunityPostEntityRepository extends BaseEntityRepository<
     CommunityPostRoot
 > {
     constructor(
-        @InjectModel(CommunityPostSchema.name) postModel: Model<CommunityPostSchema>,
-        postSchemaFactory: CommunityPostSchemaFactory
+        @InjectModel(CommunityPostSchema.name)
+        postModel: Model<CommunityPostSchema>,
+        postSchemaFactory: CommunityPostSchemaFactory,
     ) {
         super(postModel, postSchemaFactory);
     }
 
-
     findOneByPublicId(id: string) {
         return this.findOne({
-            id
+            id,
         });
     }
-} 
+}

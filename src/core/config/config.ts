@@ -34,7 +34,7 @@ export default () => {
     };
 
     const envConfig = dotenv.parse(
-        readFileSync(join(__dirname, '..', '..', "..", ".env")),
+        readFileSync(join(__dirname, '..', '..', '..', '.env')),
     );
     verifyEnv(
         envConfig,
@@ -44,16 +44,16 @@ export default () => {
         'TWITCH_API_CLIENT_ID',
         'TWITCH_API_CLIENT_SECRET',
         'TWITCH_WEBHOOK_SECRET',
-        'ADMIN_API_KEY' // temporary solution
+        'ADMIN_API_KEY', // temporary solution
     );
 
     const yamlConfig = yaml.load(
         readFileSync(
             join(
                 __dirname,
-                "..",
-                "..",
-                "..",
+                '..',
+                '..',
+                '..',
                 `config.${process.env.NODE_ENV ?? 'development'}.yaml`,
             ),
             'utf8',
@@ -73,7 +73,8 @@ export default () => {
     if (!yamlConfig.youtube.quotaLimit) yamlConfig.youtube.quotaLimit = 10000;
     if (!yamlConfig.youtube.usableQuota) yamlConfig.youtube.usableQuota = 1;
 
-    if (!yamlConfig.throttler) yamlConfig.throttler = {} as {[key: string]: number};
+    if (!yamlConfig.throttler)
+        yamlConfig.throttler = {} as { [key: string]: number };
     if (!yamlConfig.throttler.ttl) yamlConfig.throttler.ttl = 10;
     if (!yamlConfig.throttler.limit) yamlConfig.throttler.limit = 10;
 

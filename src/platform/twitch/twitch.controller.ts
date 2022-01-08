@@ -36,7 +36,7 @@ export class TwitchController {
         private readonly streamReadFactory: StreamReadFactory,
         private readonly vtuberRepository: VTuberEntityRepository,
         private readonly eventBus: EventBus,
-        private readonly eventFactory: TwitchEventFactory
+        private readonly eventFactory: TwitchEventFactory,
     ) {}
 
     @Get('live')
@@ -85,9 +85,7 @@ export class TwitchController {
     @HttpCode(200)
     @Header('Content-Type', 'text/plain')
     @UseGuards(TwitchEventSubGuard)
-    async eventSub(
-        @EventSub() notification: TwitchEventSubPayload<any> ,
-    ) {
+    async eventSub(@EventSub() notification: TwitchEventSubPayload<any>) {
         if (typeof notification === 'string') {
             return notification;
         }

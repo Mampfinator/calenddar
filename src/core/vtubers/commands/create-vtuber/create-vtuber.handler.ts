@@ -1,7 +1,7 @@
 import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
 import { VTuberFactory } from '../../vtuber.factory';
 import { CreateVTuberCommand } from './create-vtuber.command';
-import {TwitchAPIService} from "../../../../platform/twitch/api/twitch-api.service";
+import { TwitchAPIService } from '../../../../platform/twitch/api/twitch-api.service';
 import { TwitchService } from '../../../../platform/twitch/twitch.service';
 import { TwitchEventSubService } from '../../../../platform/twitch/eventsub/eventsub.service';
 import { YouTubeService } from '../../../../platform/youtube/youtube.service';
@@ -15,16 +15,25 @@ export class CreateVTuberHandler
         private readonly eventPublisher: EventPublisher,
         private readonly twitchApiService: TwitchAPIService,
         private readonly twitchService: TwitchService,
-        private readonly twitchEventsubService: TwitchEventSubService, 
+        private readonly twitchEventsubService: TwitchEventSubService,
         private readonly youtubeService: YouTubeService,
-        private readonly youtubeEventsubService: YouTubeEventSubService
+        private readonly youtubeEventsubService: YouTubeEventSubService,
     ) {}
 
     async execute({ createVtuberRequest }: CreateVTuberCommand) {
-        let { name, originalName, affiliation, youtubeId, twitchId, twitchName } =
-            createVtuberRequest;
+        let {
+            name,
+            originalName,
+            affiliation,
+            youtubeId,
+            twitchId,
+            twitchName,
+        } = createVtuberRequest;
 
-        if (!twitchId && twitchName) twitchId = (await this.twitchApiService.getChannelByName(twitchName))?.id;
+        if (!twitchId && twitchName)
+            twitchId = (
+                await this.twitchApiService.getChannelByName(twitchName)
+            )?.id;
         const vtuber = this.eventPublisher.mergeObjectContext(
             await this.vtuberFactory.create(
                 name,

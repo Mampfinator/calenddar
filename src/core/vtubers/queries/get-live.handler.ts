@@ -13,7 +13,7 @@ export class LiveVTubersHandler
     constructor(
         private readonly vtuberRepository: VTuberEntityRepository,
         private readonly streamRepository: StreamEntityRepository,
-        private readonly streamReadFactory: StreamReadFactory
+        private readonly streamReadFactory: StreamReadFactory,
     ) {}
 
     async execute(query: LiveVTubersQuery): Promise<VTuber[]> {
@@ -35,7 +35,11 @@ export class LiveVTubersHandler
                 .catch(() => {
                     /* ignore NotFound exceptions for streams; no stream = offline */
                 });
-            if (stream) liveVtubers.push({...vtuber, stream: this.streamReadFactory.createFromRoot(stream)});
+            if (stream)
+                liveVtubers.push({
+                    ...vtuber,
+                    stream: this.streamReadFactory.createFromRoot(stream),
+                });
         }
 
         return liveVtubers;

@@ -49,8 +49,10 @@ export class StreamReadRepository {
 
     async findByStatus(status: VideoStatusEnum): Promise<GenericStream[]> {
         const streams = await this.streamModel.find({
-            status
+            status,
         });
-        return streams.map(stream => this.schemaFactory.createFromSchema(stream));
+        return streams.map((stream) =>
+            this.schemaFactory.createFromSchema(stream),
+        );
     }
 }

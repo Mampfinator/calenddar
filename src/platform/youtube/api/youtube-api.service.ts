@@ -23,9 +23,10 @@ export class YouTubeAPIService {
             await new YouTubeRequestBuilder()
                 .setApiKey(this.apiKey)
                 .setUrl(Videos)
-                .setParameter('id', id)
-                .setPart(['liveStreamingDetails', 'id', 'snippet'])
-                .send().catch(e => this.logger.error(e))
+                .addParam('id', id)
+                .setPart('liveStreamingDetails', 'id', 'snippet')
+                .send()
+                .catch((e) => this.logger.error(e))
         )?.items[0];
     }
 
@@ -40,26 +41,30 @@ export class YouTubeAPIService {
         const items: YouTubeV3Video[] = [];
         for (const idBatch of idBatches) {
             let hasFailed = false;
-            const batchItems: YouTubeV3Video[] = (
-                await new YouTubeRequestBuilder()
-                    .setApiKey(this.apiKey)
-                    .setUrl(Videos)
-                    .setParameter('id', idBatch.join(','))
-                    .setPart(['liveStreamingDetails', 'id', 'snippet'])
-                    .send().catch(e => {
-                        this.logger.error(e);
-                        hasFailed = true;
-                    })
-            )?.items ?? [];
-            
+            const batchItems: YouTubeV3Video[] =
+                (
+                    await new YouTubeRequestBuilder()
+                        .setApiKey(this.apiKey)
+                        .setUrl(Videos)
+                        .addParam('id', idBatch.join(','))
+                        .setPart('liveStreamingDetails', 'id', 'snippet')
+                        .send()
+                        .catch((e) => {
+                            this.logger.error(e);
+                            hasFailed = true;
+                        })
+                )?.items ?? [];
+
             // temporary solution until I figure out why YouTube keeps throwing Forbidden responses at me.
             if (hasFailed) break;
-            
+
             // see if any videos we wanted to request are missing from the response, and add a minimum amount of data to indicate that to the return.
             const idSet = new Set<string>(idBatch);
             for (const item of batchItems) idSet.delete(item.id);
             for (const id of idSet) {
-                this.logger.debug(`Video with ID ${id} will be marked as deleted.`);
+                this.logger.debug(
+                    `Video with ID ${id} will be marked as deleted.`,
+                );
                 batchItems.push({
                     deleted: true,
                     id,
@@ -73,14 +78,22 @@ export class YouTubeAPIService {
     }
 
     async fetchRecentVideosFromFeed(channelId: string) {
-        const parser = new Parser({customFields: {item: [["yt:videoId", "videoId"], ["yt:channelId", "channelId"]]}});
-        const {items} = await parser.parseURL(`https://youtube.com/feeds/videos.xml?channel_id=${channelId}`);
+        const parser = new Parser({
+            customFields: {
+                item: [
+                    ['yt:videoId', 'videoId'],
+                    ['yt:channelId', 'channelId'],
+                ],
+            },
+        });
+        const { items } = await parser.parseURL(
+            `https://youtube.com/feeds/videos.xml?channel_id=${channelId}`,
+        );
         return items;
     }
 
-
     extractInfoFromApiVideo(video: YouTubeV3Video) {
-        const {id: streamId} = video;
+        const { id: streamId } = video;
         const { snippet, liveStreamingDetails } = video;
         // general details
         const { channelId, title, description, liveBroadcastContent } = snippet;
@@ -97,7 +110,7 @@ export class YouTubeAPIService {
             case 'upcoming':
                 status = VideoStatusEnum.Upcoming;
                 break;
-            default: 
+            default:
                 throw new APIVideoStatusException(video);
         }
 
@@ -118,12 +131,12 @@ export class YouTubeAPIService {
         return {
             streamId,
             channelId,
-            title, 
+            title,
             description,
             startedAt,
             scheduledFor,
             endedAt,
-            status
-        }
+            status,
+        };
     }
 }

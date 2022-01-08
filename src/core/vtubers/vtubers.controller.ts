@@ -25,7 +25,7 @@ import { StringToArrayPipe, ValidateObjectIdPipe } from '../../common/util';
 import { DeleteVTuberCommand } from './commands/delete-vtuber/delete-vtuber.command';
 import { VTuberDeletedEvent } from './events/vtuber-deleted.event';
 import { LiveVTubersQuery } from './queries/get-live.query';
-import { Throttle } from "@nestjs/throttler";
+import { Throttle } from '@nestjs/throttler';
 import { Protected } from '../../common/decorators/protected-endpoint.decorator';
 @UseInterceptors(CacheInterceptor)
 @Controller('vtubers')
@@ -47,10 +47,10 @@ export class VTubersController {
 
     @Get('live')
     async getLiveVTubers(
-        @Query("platform", StringToArrayPipe) platforms: string[]
+        @Query('platform', StringToArrayPipe) platforms: string[],
     ) {
         return this.queryBus.execute<LiveVTubersQuery, VTuber[]>(
-            new LiveVTubersQuery(platforms ?? "all"),
+            new LiveVTubersQuery(platforms ?? 'all'),
         );
     }
 

@@ -70,35 +70,62 @@ export class YouTubeService {
     }
 
     async syncFeedVideoState(...channelIds: string[]) {
-        if (!channelIds) channelIds = (await this.vtuberRepository.findByQuery({youtubeId: {$exists: true}})).map(v => v.getYoutubeId());
+        if (!channelIds)
+            channelIds = (
+                await this.vtuberRepository.findByQuery({
+                    youtubeId: { $exists: true },
+                })
+            ).map((v) => v.getYoutubeId());
 
         const promises = [];
 
         for (const id of channelIds) {
-            const feedVideoIds = (await this.apiService.fetchRecentVideosFromFeed(id)).map(v => v.videoId);
-            const apiVideos = await this.apiService.getVideosByIds(...feedVideoIds);
+            const feedVideoIds = (
+                await this.apiService.fetchRecentVideosFromFeed(id)
+            ).map((v) => v.videoId);
+            const apiVideos = await this.apiService.getVideosByIds(
+                ...feedVideoIds,
+            );
 
             for (const video of apiVideos) {
-                const dbVideo = await this.streamRepository.findByStreamId(video.id);
+                const dbVideo = await this.streamRepository.findByStreamId(
+                    video.id,
+                );
 
                 if (!dbVideo) {
-                    const {streamId, channelId, title, status, description, startedAt, endedAt, scheduledFor} = this.apiService.extractInfoFromApiVideo(video);
-                    promises.push(this.streamFactory.create(
-                        streamId, 
-                        channelId, 
-                        "youtube",
+                    const {
+                        streamId,
+                        channelId,
                         title,
                         status,
-                        description, 
-                        startedAt, 
-                        endedAt, 
-                        scheduledFor
-                    ))
+                        description,
+                        startedAt,
+                        endedAt,
+                        scheduledFor,
+                    } = this.apiService.extractInfoFromApiVideo(video);
+                    promises.push(
+                        this.streamFactory.create(
+                            streamId,
+                            channelId,
+                            'youtube',
+                            title,
+                            status,
+                            description,
+                            startedAt,
+                            endedAt,
+                            scheduledFor,
+                        ),
+                    );
                 } else {
                     const updates = dbVideo.updateFromYouTubeApi(video);
-                    if (updates.size > 0) promises.push(this.streamRepository.findOneAndReplaceById(dbVideo._id, dbVideo));
+                    if (updates.size > 0)
+                        promises.push(
+                            this.streamRepository.findOneAndReplaceById(
+                                dbVideo._id,
+                                dbVideo,
+                            ),
+                        );
                 }
-
             }
         }
 

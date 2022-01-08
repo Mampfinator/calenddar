@@ -1,13 +1,10 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { StreamResolver } from './stream.revolvers';
 import { StreamsService } from './streams.service';
 import { StreamsController } from './streams.controller';
 import { StreamSchemaFactory } from './db/stream-schema.factory';
 import { StreamReadFactory } from './db/stream-read.factory';
 import { StreamReadRepository } from './db/stream-read.repository';
-
-import { TwitchModule } from '../../platform/twitch/twitch.module';
-import { YouTubeModule } from '../../platform/youtube/youtube.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { StreamSchema } from './db/stream.schema';
 
@@ -17,8 +14,6 @@ import { StreamFactory } from './stream.factory';
 
 @Module({
     imports: [
-        // forwardRef(() => TwitchModule),
-        // forwardRef(() => YouTubeModule),
         MongooseModule.forFeatureAsync([
             {
                 name: StreamSchema.name,

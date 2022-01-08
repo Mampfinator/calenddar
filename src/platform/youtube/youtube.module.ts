@@ -26,11 +26,16 @@ import { YouTubeCommunityPostsModule } from './community-posts/youtube-community
         forwardRef(() => StreamsModule),
         YouTubeAPIModule,
         YouTubeEventSubModule,
-        YouTubeCommunityPostsModule
+        YouTubeCommunityPostsModule,
     ],
     providers: [YouTubeService, YouTubeEventFactory],
     controllers: [YouTubeController],
-    exports: [YouTubeService, YouTubeEventFactory, YouTubeAPIModule, YouTubeEventSubModule],
+    exports: [
+        YouTubeService,
+        YouTubeEventFactory,
+        YouTubeAPIModule,
+        YouTubeEventSubModule,
+    ],
 })
 export class YouTubeModule
     implements OnApplicationBootstrap, OnApplicationShutdown
@@ -64,7 +69,9 @@ export class YouTubeModule
 
         const i = setInterval(() => {
             // debug for sanity.
-            this.logger.debug(`YouTube PubSub requests processed so far: ${counter.value}/${ids.length}.`);
+            this.logger.debug(
+                `YouTube PubSub requests processed so far: ${counter.value}/${ids.length}.`,
+            );
             if (counter.value == ids.length) clearInterval(i);
         }, 1500);
 
@@ -81,16 +88,17 @@ export class YouTubeModule
 
                 const { quotaLimit, usableQuota } =
                     this.configService.get<YouTubeOptions>('youtube');
-                
-                    
-                    const interval =
+
+                const interval =
                     ((24 * 60 * 60 * 1000) / (quotaLimit * usableQuota)) * // figure out how many requests we can do per day
-                    Math.ceil(totalVideos / 50);    // figure out how many batches of requests we'll need to do at the current rate
-                
-                    return interval;
+                    Math.ceil(totalVideos / 50); // figure out how many batches of requests we'll need to do at the current rate
+
+                return interval;
             },
             async () => {
-                this.youtubeService.syncVideoStates().catch(error => this.logger.error(error));
+                this.youtubeService
+                    .syncVideoStates()
+                    .catch((error) => this.logger.error(error));
             },
         );
 

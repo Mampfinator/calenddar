@@ -7,15 +7,17 @@ import { Stream, VideoStatusEnum } from './stream.read';
 export class StreamResolver {
     constructor(
         private readonly streamRepository: StreamReadRepository,
-        private readonly streamReadFactory: StreamReadFactory
+        private readonly streamReadFactory: StreamReadFactory,
     ) {}
-
 
     @Query(() => [Stream])
     async streams(
-        @Args("status", {type: () => VideoStatusEnum}) status: VideoStatusEnum
+        @Args('status', { type: () => VideoStatusEnum })
+        status: VideoStatusEnum,
     ): Promise<Stream[]> {
         const streams = await this.streamRepository.findByStatus(status);
-        return streams.map(stream => this.streamReadFactory.createFromRoot(stream));
+        return streams.map((stream) =>
+            this.streamReadFactory.createFromRoot(stream),
+        );
     }
 }

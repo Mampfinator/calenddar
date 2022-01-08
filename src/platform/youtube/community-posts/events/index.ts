@@ -1,5 +1,3 @@
-import { CommunityPostCreatedHandler } from "./communitypost-created.handler";
+import { CommunityPostCreatedHandler } from './communitypost-created.handler';
 
-export const CommunityPostEventHandlers = [
-    CommunityPostCreatedHandler
-];
+export const CommunityPostEventHandlers = [CommunityPostCreatedHandler];

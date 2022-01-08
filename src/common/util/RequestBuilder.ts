@@ -1,12 +1,13 @@
-import axios from "axios";
+import axios from 'axios';
 
-export type HTTPRequestMethod = "GET" | "POST" | "PATCH" | "DELETE"; 
+export type HTTPRequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
 export class RequestBuilder {
     private headers: Record<string, string> = {};
     private params: Record<string, string> = {};
-    private method: HTTPRequestMethod = "GET";
+    private method: HTTPRequestMethod = 'GET';
     private url: string;
+    private body: any;
 
     setMethod(method: HTTPRequestMethod) {
         this.method = method;
@@ -28,13 +29,22 @@ export class RequestBuilder {
         return this;
     }
 
+    setBody(body: string | Record<string, any>) {
+        this.body = body;
+        return this;
+    }
+
     async send(resolveFull?: boolean) {
-        if (!this.url) throw new TypeError("URL needs to be set before sending the request!");
+        if (!this.url)
+            throw new TypeError(
+                'URL needs to be set before sending the request!',
+            );
         const response = await axios({
             method: this.method,
             params: this.params,
             headers: this.headers,
             url: this.url,
+            data: this.body,
         });
 
         return !resolveFull ? response.data : response;

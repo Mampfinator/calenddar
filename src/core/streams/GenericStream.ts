@@ -44,15 +44,21 @@ export class GenericStream extends AggregateRoot {
     }
 
     updateFromYouTubeApi(
-        video: YouTubeV3Video
+        video: YouTubeV3Video,
     ): Map<string, { oldValue: any; newValue: any }> {
         if (this.platform !== 'youtube') {
             throw new Error(
                 `Tried updating non-YouTube stream from YouTube API!`,
             );
         }
-        if (!video) throw new Error(`No video passed! Expected video with ID ${this.id}.`);
-        if (!video.id || video.id !== this.id) throw new Error(`Got unexpected video ID. Expected: ${this.id}, got: ${video.id}.`);
+        if (!video)
+            throw new Error(
+                `No video passed! Expected video with ID ${this.id}.`,
+            );
+        if (!video.id || video.id !== this.id)
+            throw new Error(
+                `Got unexpected video ID. Expected: ${this.id}, got: ${video.id}.`,
+            );
 
         const updates = new Map<string, { oldValue: any; newValue: any }>();
 
@@ -67,8 +73,8 @@ export class GenericStream extends AggregateRoot {
             return updates;
         }
 
-
-        const {status, title, description, scheduledFor} = YouTubeAPIService.prototype.extractInfoFromApiVideo(video)
+        const { status, title, description, scheduledFor } =
+            YouTubeAPIService.prototype.extractInfoFromApiVideo(video);
 
         function compare<T = any>(
             key: string,

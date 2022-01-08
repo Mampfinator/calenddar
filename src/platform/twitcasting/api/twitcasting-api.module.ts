@@ -1,8 +1,8 @@
-import { Module } from "@nestjs/common";
-import { TwitcastingAPIService } from "./twitcasting-api.service";
+import { Module } from '@nestjs/common';
+import { TwitcastingAPIService } from './twitcasting-api.service';
 
 @Module({
     providers: [TwitcastingAPIService],
-    exports: [TwitcastingAPIService]
+    exports: [TwitcastingAPIService],
 })
 export class TwitcastingAPIModule {}

@@ -36,7 +36,15 @@ export class YouTubeEventSubFeedHandler
             return;
 
         const video = await this.apiService.getVideoById(videoId);
-        const {channelId, title, status, description, startedAt, endedAt, scheduledFor} = this.apiService.extractInfoFromApiVideo(video);
+        const {
+            channelId,
+            title,
+            status,
+            description,
+            startedAt,
+            endedAt,
+            scheduledFor,
+        } = this.apiService.extractInfoFromApiVideo(video);
 
         const dbVideo = await this.streamFactory.create(
             videoId,

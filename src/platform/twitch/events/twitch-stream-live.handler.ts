@@ -16,29 +16,31 @@ export class TwitchStreamLiveHandler
         private readonly apiService: TwitchAPIService,
         private readonly streamRepository: StreamEntityRepository,
         private readonly streamFactory: StreamFactory,
-        private readonly eventEmitter: EventEmitter2
+        private readonly eventEmitter: EventEmitter2,
     ) {}
 
-    async handle({event}: TwitchStreamLiveEvent) {
-        const {event: eventData} = event;
-        const {id, broadcaster_user_id} = eventData;
-        
-        this.logger.log(`Handling TwitchStreamLiveEvent for ${broadcaster_user_id} (${id}).`);
+    async handle({ event }: TwitchStreamLiveEvent) {
+        const { event: eventData } = event;
+        const { id, broadcaster_user_id } = eventData;
+
+        this.logger.log(
+            `Handling TwitchStreamLiveEvent for ${broadcaster_user_id} (${id}).`,
+        );
 
         const stream = await this.apiService.getStream(broadcaster_user_id);
         if (!(stream?.id === id)) return;
-        if (await this.streamRepository.findByStreamId(id).catch()) return; 
+        if (await this.streamRepository.findByStreamId(id).catch()) return;
 
-        const {title, started_at} = stream;
+        const { title, started_at } = stream;
 
         const dbStream = await this.streamFactory.create(
-            id, 
+            id,
             broadcaster_user_id,
-            "twitch",
+            'twitch',
             title,
             VideoStatusEnum.Live,
             undefined,
-            new Date(started_at)
+            new Date(started_at),
         );
 
         this.eventEmitter.emit(`webevents.twitch.live`, dbStream);

@@ -35,7 +35,9 @@ export class TwitchService {
     }
 
     async syncUserState(userId: string): Promise<void> {
-        const channel = await this.twitchApiService.getChannelInformation(userId);
+        const channel = await this.twitchApiService.getChannelInformation(
+            userId,
+        );
         if (channel.game_id === undefined) {
             const currentLiveStreams = await this.streamRepository
                 .findByQuery({
@@ -59,7 +61,8 @@ export class TwitchService {
             }
         } else {
             const stream = await this.twitchApiService.getStream(userId);
-            if (stream && 
+            if (
+                stream &&
                 !(await this.streamRepository
                     .findOneByQuery({ streamId: stream.id })
                     .catch(() => {

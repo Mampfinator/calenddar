@@ -15,7 +15,7 @@ export class CommunityPostSchemaFactory
             id: post.getId(),
             channelId: post.getChannelId(),
             text: post.getText(),
-            attachment: post.getAttachment()
+            attachment: post.getAttachment(),
         };
     }
 
@@ -25,7 +25,7 @@ export class CommunityPostSchemaFactory
             schema.id,
             schema.channelId,
             schema.text,
-            schema.attachment
+            schema.attachment,
         );
     }
 }

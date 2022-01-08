@@ -1,7 +1,5 @@
-import { CommunityPostRoot } from "../CommunityPost";
+import { CommunityPostRoot } from '../CommunityPost';
 
 export class CommunityPostCreatedEvent {
-    constructor(
-        public readonly post: CommunityPostRoot
-    ) {}
+    constructor(public readonly post: CommunityPostRoot) {}
 }
