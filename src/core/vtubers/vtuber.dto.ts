@@ -1,3 +1,4 @@
+// TODO: move descriptions & decorators from VTuberRoot to VTuber class.
 import { ObjectId } from 'mongodb';
 import { VTuberSchema } from './db/vtuber.schema';
 import { Field, ObjectType } from '@nestjs/graphql';
@@ -10,6 +11,8 @@ export class VTuber {
         originalName,
         youtubeId,
         twitchId,
+        twitterId,
+        twitcastingId,
         affiliation,
     }: VTuberSchema) {
         this.id = _id;
@@ -17,6 +20,8 @@ export class VTuber {
         this.originalName = originalName;
         this.youtubeId = youtubeId;
         this.twitchId = twitchId;
+        this.twitterId = twitterId;
+        this.twitcastingId = twitcastingId; 
         this.affiliation = affiliation;
     }
 
@@ -27,4 +32,6 @@ export class VTuber {
 
     @Field() readonly twitchId?: string;
     @Field() readonly youtubeId?: string;
+    @Field() readonly twitterId?: string;
+    @Field() readonly twitcastingId?: string;
 }

@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Parser from 'rss-parser';
-import { Videos } from './constants';
+import { Videos, Channels } from './constants';
 import { YouTubeV3Video } from './interfaces/V3Video';
 import { YouTubeRequestBuilder } from './YouTubeRequestBuilder';
 import { isValidDate } from '../../../common/util';
@@ -75,6 +75,22 @@ export class YouTubeAPIService {
         }
 
         return items;
+    }
+
+    async getChannels(...channelIds: string[]) {
+        const {items: channels} = await new YouTubeRequestBuilder()
+            .setUrl(Channels)
+            .setApiKey(this.apiKey)
+            .addParam("id", channelIds.join(","))
+            .setPart("id", "snippet", "statistics")
+            .send()
+
+        return channels;
+    }
+
+    async getChannel(channelId: string) {
+        const [channel] = await this.getChannels(channelId);
+        return channel;
     }
 
     async fetchRecentVideosFromFeed(channelId: string) {

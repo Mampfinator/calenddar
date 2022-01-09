@@ -84,7 +84,6 @@ export class VTubersController {
 
     @Get('live/:id')
     async getVTuberLiveStatus(@Param('id', ValidateObjectIdPipe) id: string) {
-        //
     }
 
     @Post()

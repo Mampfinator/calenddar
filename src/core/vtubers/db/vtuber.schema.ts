@@ -8,4 +8,6 @@ export class VTuberSchema extends IdentifiableEntitySchema {
     @Prop() readonly affiliation: string;
     @Prop() readonly youtubeId: string;
     @Prop() readonly twitchId: string;
+    @Prop() readonly twitterId: string;
+    @Prop() readonly twitcastingId: string;
 }

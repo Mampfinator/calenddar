@@ -1,3 +1,3 @@
 export class DeleteVTuberCommand {
-    constructor(public readonly id) {}
+    constructor(public readonly id: string) {}
 }
