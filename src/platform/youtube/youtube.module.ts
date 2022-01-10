@@ -1,16 +1,8 @@
-import {
-    Module,
-    forwardRef,
-    OnApplicationBootstrap,
-    Logger,
-    OnApplicationShutdown,
-} from '@nestjs/common';
+import { Module, Logger, OnApplicationShutdown } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
-import { DynamicTimer } from '../../common/util';
-import { StreamsModule } from '../../core/streams/streams.module';
-import { VTubersModule } from '../../core/vtubers/vtubers.module';
+import { DynamicTimer } from '../../common';
+import { StreamsModule, VTubersModule } from '../../core';
 import { YouTubeAPIModule } from './api/youtube-api.module';
-import { YouTubeAPIService } from './api/youtube-api.service';
 import { YouTubeEventSubModule } from './eventsub/youtube-eventsub.module';
 import { YouTubeEventSubService } from './eventsub/youtube-eventsub.service';
 import { YouTubeController } from './youtube.controller';
@@ -22,8 +14,8 @@ import { YouTubeCommunityPostsModule } from './community-posts/youtube-community
 @Module({
     imports: [
         CqrsModule,
-        forwardRef(() => VTubersModule),
-        forwardRef(() => StreamsModule),
+        VTubersModule,
+        StreamsModule,
         YouTubeAPIModule,
         YouTubeEventSubModule,
         YouTubeCommunityPostsModule,
@@ -37,9 +29,7 @@ import { YouTubeCommunityPostsModule } from './community-posts/youtube-community
         YouTubeEventSubModule,
     ],
 })
-export class YouTubeModule
-    implements OnApplicationBootstrap, OnApplicationShutdown
-{
+export class YouTubeModule implements OnApplicationShutdown {
     private readonly logger = new Logger(YouTubeModule.name);
 
     private _videoTimer: DynamicTimer;
@@ -49,7 +39,8 @@ export class YouTubeModule
         private readonly configService: ConfigService,
     ) {}
 
-    async onApplicationBootstrap() {
+    // init function called by PlatformModule
+    async init() {
         const counter = {
             value: 0,
             inc() {

@@ -5,32 +5,33 @@ import {
     Module,
     NestModule,
     OnApplicationBootstrap,
+    CacheModule,
 } from '@nestjs/common';
-import { PlatformModule } from './platform/platform.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { VTubersModule } from './core/vtubers/vtubers.module';
-import { YouTubeModule } from './platform/youtube/youtube.module';
-import { TwitchModule } from './platform/twitch/twitch.module';
-import { StreamsModule } from './core/streams/streams.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { GraphQLModule } from '@nestjs/graphql';
-import { videoStatusResolver } from './core/streams/stream.read';
 import { ScheduleModule } from '@nestjs/schedule';
-import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import config, {
+import { ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
+import {
+    VTubersModule,
+    StreamsModule,
+    WebeventsModule,
     APIOptions,
     GraphQLOptions,
     ThrottlerOptions,
-} from './core/config/config';
+} from './core';
+import config from './core/config/config';
+import { videoStatusResolver } from './core/streams/stream.read';
+import {
+    RawBodyMiddleware,
+    JSONBodyMiddleware,
+    ProtectedGuard,
+} from './common';
+import { PlatformModule } from './platform/platform.module';
+import { AppService } from './app.service';
 import { AppController } from './app.controller';
-import { RawBodyMiddleware } from './common/middleware/raw-body.middleware';
-import { JSONBodyMiddleware } from './common/middleware/json-body.middleware';
-import { WebeventsModule } from './core/webevents/webevents.module';
-import { ThrottlerModule } from '@nestjs/throttler';
-import { APP_GUARD } from '@nestjs/core';
-import { ProtectedGuard } from './common/guards/protected-endpoint.guard';
-import { CacheModule } from '@nestjs/common';
 import {
     WinstonModule,
     utilities as nestWinstonUtils,

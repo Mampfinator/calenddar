@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { IEvent } from '@nestjs/cqrs';
-import { GenericStream } from '../../core/streams/GenericStream';
-import { VideoStatusEnum } from '../../core/streams/stream.read';
+import { GenericStream, VideoStatus } from '../../core';
 import { YouTubeStreamOfflineEvent } from './events/youtube-stream-offline.event';
 import { YouTubeStreamLiveEvent } from './events/youtube-stream-live.event';
 import { YouTubeStreamReservationRemovedEvent } from './events/youtube-stream-reservation-removed.event';
@@ -17,16 +16,16 @@ export class YouTubeEventFactory {
             'status',
             (
                 video: GenericStream,
-                oldValue: VideoStatusEnum,
-                newValue: VideoStatusEnum,
+                oldValue: VideoStatus,
+                newValue: VideoStatus,
             ) => {
                 switch (oldValue) {
-                    case VideoStatusEnum.Live:
+                    case VideoStatus.Live:
                         return new YouTubeStreamOfflineEvent(video);
-                    case VideoStatusEnum.Upcoming:
-                        if (newValue === VideoStatusEnum.Live)
+                    case VideoStatus.Upcoming:
+                        if (newValue === VideoStatus.Live)
                             return new YouTubeStreamLiveEvent(video, true);
-                        if (newValue === VideoStatusEnum.Offline)
+                        if (newValue === VideoStatus.Offline)
                             return new YouTubeStreamReservationRemovedEvent(
                                 video,
                             );
@@ -37,7 +36,7 @@ export class YouTubeEventFactory {
             'scheduledFor',
             (video: GenericStream, oldValue: Date, newValue: Date) => {
                 if (
-                    video.status !== VideoStatusEnum.Upcoming ||
+                    video.status !== VideoStatus.Upcoming ||
                     !oldValue ||
                     !newValue ||
                     isNaN(oldValue.valueOf()) ||

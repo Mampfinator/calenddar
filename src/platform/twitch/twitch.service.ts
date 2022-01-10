@@ -1,16 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
-
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { HttpAdapterHost } from '@nestjs/core';
-import { EventBus } from '@nestjs/cqrs';
-
-import { StreamEntityRepository } from '../../core/streams/db/stream-entity.repository';
-import { VTuberEntityRepository } from '../../core/vtubers/db/vtuber-entity.repository';
-
+import {
+    StreamEntityRepository,
+    VTuberEntityRepository,
+    VideoStatus,
+} from '../../core';
 import { TwitchStreamFactory } from './twitch-stream.factory';
-import { ConfigService } from '@nestjs/config';
 import { TwitchAPIService } from './api/twitch-api.service';
-import { VideoStatusEnum } from '../../core/streams/stream.read';
 
 @Injectable()
 export class TwitchService {
@@ -19,11 +14,7 @@ export class TwitchService {
     constructor(
         private readonly streamRepository: StreamEntityRepository,
         private readonly twitchStreamFactory: TwitchStreamFactory,
-        private readonly adapterHost: HttpAdapterHost,
         private readonly vtuberRepository: VTuberEntityRepository,
-        private readonly eventBus: EventBus,
-        private readonly eventEmitter: EventEmitter2,
-        private readonly configService: ConfigService,
         private readonly twitchApiService: TwitchAPIService,
     ) {}
 
@@ -41,7 +32,7 @@ export class TwitchService {
         if (channel.game_id === undefined) {
             const currentLiveStreams = await this.streamRepository
                 .findByQuery({
-                    status: VideoStatusEnum.Live,
+                    status: VideoStatus.Live,
                     platform: 'twitch',
                     channelId: userId,
                 })
@@ -53,7 +44,7 @@ export class TwitchService {
             }
             for (const liveStream of currentLiveStreams) {
                 // no stream online, meaning that, if there are streams currently marked as online, we can set them to offline instead.
-                liveStream.status = VideoStatusEnum.Offline;
+                liveStream.status = VideoStatus.Offline;
                 await this.streamRepository.findOneAndReplaceById(
                     liveStream._id,
                     liveStream,

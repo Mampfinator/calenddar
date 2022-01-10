@@ -1,12 +1,14 @@
 import { Logger } from '@nestjs/common';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { StreamEntityRepository } from '../../../../core/streams/db/stream-entity.repository';
-import { StreamReadFactory } from '../../../../core/streams/db/stream-read.factory';
-import { StreamFactory } from '../../../../core/streams/stream.factory';
-import { VideoStatusEnum } from '../../../../core/streams/stream.read';
+import {
+    StreamEntityRepository,
+    StreamReadFactory,
+    StreamFactory,
+    VideoStatus,
+} from '../../../../core';
 import { YouTubeAPIService } from '../../api/youtube-api.service';
-import { isValidDate, _logToFile } from '../../../../common/util';
+import { isValidDate } from '../../../../common';
 import { YouTubeEventSubFeedEvent } from './youtube-eventsub-feed.event.ts';
 
 @EventsHandler(YouTubeEventSubFeedEvent)
@@ -61,11 +63,11 @@ export class YouTubeEventSubFeedHandler
         // send to clients
         const newVideo = this.streamReadFactory.createFromRoot(dbVideo);
         let webevent: string;
-        if (newVideo.status === VideoStatusEnum.Live)
+        if (newVideo.status === VideoStatus.Live)
             webevent = 'webevents.youtube.live';
-        else if (newVideo.status === VideoStatusEnum.Offline)
+        else if (newVideo.status === VideoStatus.Offline)
             webevent = 'webevents.youtube.upload';
-        else if (newVideo.status === VideoStatusEnum.Upcoming)
+        else if (newVideo.status === VideoStatus.Upcoming)
             webevent = 'webevents.youtube.upcoming';
         if (!webevent)
             throw new Error(

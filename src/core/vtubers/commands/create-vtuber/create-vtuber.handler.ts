@@ -29,7 +29,7 @@ export class CreateVTuberHandler
             twitchId,
             twitchName,
             twitterId,
-            twitcastingId
+            twitcastingId,
         } = createVtuberRequest;
 
         if (!twitchId && twitchName)
@@ -43,8 +43,8 @@ export class CreateVTuberHandler
                 affiliation,
                 youtubeId,
                 twitchId,
-                twitterId, 
-                twitcastingId
+                twitterId,
+                twitcastingId,
             ),
         );
 

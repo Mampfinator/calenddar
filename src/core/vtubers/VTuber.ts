@@ -36,7 +36,7 @@ export class VTuberRoot extends AggregateRoot {
         youtubeId: string,
         twitchId: string,
         twitterId: string,
-        twitcastingId: string
+        twitcastingId: string,
     ) {
         super();
         this.id = id;
@@ -79,7 +79,10 @@ export class VTuberRoot extends AggregateRoot {
         return this.affiliation;
     }
 
-    setChannelId(platform: 'twitch' | 'youtube' | "twitter" | "twitcasting", id?: string) {
+    setChannelId(
+        platform: 'twitch' | 'youtube' | 'twitter' | 'twitcasting',
+        id?: string,
+    ) {
         if (id === undefined) return;
         const key: `${typeof platform}Id` = `${platform}Id`;
 

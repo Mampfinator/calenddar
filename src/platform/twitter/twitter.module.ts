@@ -5,11 +5,13 @@ import {
     OnApplicationBootstrap,
     OnApplicationShutdown,
 } from '@nestjs/common';
-import { StreamEntityRepository } from '../../core/streams/db/stream-entity.repository';
-import { VideoStatusEnum } from '../../core/streams/stream.read';
-import { StreamsModule } from '../../core/streams/streams.module';
-import { VTubersModule } from '../../core/vtubers/vtubers.module';
-import { DynamicTimer } from '../../common/util';
+import { DynamicTimer } from '../../common';
+import {
+    StreamsModule,
+    VTubersModule,
+    StreamEntityRepository,
+    VideoStatus,
+} from '../../core';
 
 import { TwitterApiService } from './twitter-api.service';
 import { TwitterService } from './twitter.service';
@@ -33,10 +35,7 @@ export class TwitterModule
                 const count = (
                     await this.streamRepository.findByQuery({
                         status: {
-                            $in: [
-                                VideoStatusEnum.Live,
-                                VideoStatusEnum.Upcoming,
-                            ],
+                            $in: [VideoStatus.Live, VideoStatus.Upcoming],
                         },
                         platform: 'twitter',
                     })

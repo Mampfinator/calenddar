@@ -5,8 +5,8 @@ import {
     NotFoundException,
     Param,
 } from '@nestjs/common';
-import { ValidateObjectIdPipe } from '../../common/util';
-import { VTuberEntityRepository } from '../../core/vtubers/db/vtuber-entity.repository';
+import { ValidateObjectIdPipe } from '../../common';
+import { VTuberEntityRepository } from '../../core';
 import { YouTubeEventSubService } from './eventsub/youtube-eventsub.service';
 
 @Controller('youtube')

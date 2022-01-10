@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { RequestBuilder } from '../../../common/util/RequestBuilder';
+import { RequestBuilder } from '../../../common';
 
 export class YouTubeRequestBuilder extends RequestBuilder {
     setApiKey(key: string) {

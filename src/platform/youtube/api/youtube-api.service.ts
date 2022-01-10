@@ -1,11 +1,11 @@
+import Parser from 'rss-parser';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import Parser from 'rss-parser';
+import { isValidDate } from '../../../common';
+import { VideoStatus } from '../../../core';
 import { Videos, Channels } from './constants';
 import { YouTubeV3Video } from './interfaces/V3Video';
 import { YouTubeRequestBuilder } from './YouTubeRequestBuilder';
-import { isValidDate } from '../../../common/util';
-import { VideoStatusEnum } from '../../../core/streams/stream.read';
 import { APIVideoStatusException } from '../errors/APIVideoStatusException';
 
 @Injectable()
@@ -78,12 +78,12 @@ export class YouTubeAPIService {
     }
 
     async getChannels(...channelIds: string[]) {
-        const {items: channels} = await new YouTubeRequestBuilder()
+        const { items: channels } = await new YouTubeRequestBuilder()
             .setUrl(Channels)
             .setApiKey(this.apiKey)
-            .addParam("id", channelIds.join(","))
-            .setPart("id", "snippet", "statistics")
-            .send()
+            .addParam('id', channelIds.join(','))
+            .setPart('id', 'snippet', 'statistics')
+            .send();
 
         return channels;
     }
@@ -114,17 +114,17 @@ export class YouTubeAPIService {
         // general details
         const { channelId, title, description, liveBroadcastContent } = snippet;
 
-        var status: VideoStatusEnum;
+        var status: VideoStatus;
         switch (liveBroadcastContent) {
             case 'live':
-                status = VideoStatusEnum.Live;
+                status = VideoStatus.Live;
                 break;
             case undefined:
             case 'none':
-                status = VideoStatusEnum.Offline;
+                status = VideoStatus.Offline;
                 break;
             case 'upcoming':
-                status = VideoStatusEnum.Upcoming;
+                status = VideoStatus.Upcoming;
                 break;
             default:
                 throw new APIVideoStatusException(video);

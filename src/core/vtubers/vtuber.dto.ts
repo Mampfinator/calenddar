@@ -21,7 +21,7 @@ export class VTuber {
         this.youtubeId = youtubeId;
         this.twitchId = twitchId;
         this.twitterId = twitterId;
-        this.twitcastingId = twitcastingId; 
+        this.twitcastingId = twitcastingId;
         this.affiliation = affiliation;
     }
 

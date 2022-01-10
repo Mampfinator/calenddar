@@ -1,4 +1,4 @@
-import { RequestBuilder } from '../../common/util/RequestBuilder';
+import { RequestBuilder } from '../../common';
 
 export class TwitterAPIRequestBuilder extends RequestBuilder {
     setToken(key: string) {

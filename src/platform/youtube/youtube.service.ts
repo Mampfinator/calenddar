@@ -1,8 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
-import { StreamFactory } from '../../core/streams/stream.factory';
-import { StreamEntityRepository } from '../../core/streams/db/stream-entity.repository';
-import { VTuberEntityRepository } from '../../core/vtubers/db/vtuber-entity.repository';
+import {
+    StreamFactory,
+    StreamEntityRepository,
+    VTuberEntityRepository,
+} from '../../core';
 import { YouTubeAPIService } from './api/youtube-api.service';
 import { YouTubeEventFactory } from './youtube-event.factory';
 

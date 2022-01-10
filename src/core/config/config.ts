@@ -45,6 +45,7 @@ export default () => {
         'TWITCH_API_CLIENT_SECRET',
         'TWITCH_WEBHOOK_SECRET',
         'ADMIN_API_KEY', // temporary solution
+        'TWITTER_TOKEN',
     );
 
     const yamlConfig = yaml.load(

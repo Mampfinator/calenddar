@@ -19,7 +19,7 @@ export class VTuberFactory implements EntityFactory<VTuberRoot> {
         youtubeId: string | null,
         twitchId: string | null,
         twitterId: string | null,
-        twitcastingId: string | null
+        twitcastingId: string | null,
     ): Promise<VTuberRoot> {
         const vtuber = new VTuberRoot(
             new ObjectId().toHexString(),
@@ -29,7 +29,7 @@ export class VTuberFactory implements EntityFactory<VTuberRoot> {
             youtubeId,
             twitchId,
             twitterId,
-            twitcastingId
+            twitcastingId,
         );
         await this.vtuberEntityRepository.create(vtuber);
         vtuber.apply(new VTuberCreatedEvent(vtuber.getId()));

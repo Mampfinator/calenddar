@@ -1,4 +1,4 @@
-import { Module, OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { TwitchModule } from './twitch/twitch.module';
 import { TwitchService } from './twitch/twitch.service';
 import { YouTubeModule } from './youtube/youtube.module';
@@ -21,6 +21,7 @@ export class PlatformModule implements OnModuleInit {
         private readonly twitterService: TwitterService,
     ) {}
 
+    // Once this module loads, initialize all **activated** platform sub-modules.
     async onModuleInit() {
         // TODO: think of less scuffed way of doing this
         const services = new Set<{

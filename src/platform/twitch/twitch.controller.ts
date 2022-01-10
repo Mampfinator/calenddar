@@ -10,18 +10,17 @@ import {
     HttpCode,
     Header,
 } from '@nestjs/common';
-import { HttpAdapterHost } from '@nestjs/core';
-import { Stream, VideoStatusEnum } from '../../core/streams/stream.read';
-import { TwitchService } from './twitch.service';
-import { StreamEntityRepository } from '../../core/streams/db/stream-entity.repository';
-import { StreamReadFactory } from '../../core/streams/db/stream-read.factory';
-import { VTuberEntityRepository } from '../../core/vtubers/db/vtuber-entity.repository';
-import { ValidateObjectIdPipe } from '../../common/util';
+import { EventBus } from '@nestjs/cqrs';
+import {
+    Stream,
+    VideoStatus,
+    StreamEntityRepository,
+    StreamReadFactory,
+    VTuberEntityRepository,
+} from '../../core';
+import { ValidateObjectIdPipe } from '../../common';
 import { EventSub } from './eventsub/eventsub.decorator';
 import { TwitchEventSubGuard } from './eventsub/eventsub.guard';
-import { EventBus } from '@nestjs/cqrs';
-import { TwitchStreamLiveEvent } from './events/twitch-stream-live.event';
-import { TwitchStreamOfflineEvent } from './events/twitch-stream-offline.event';
 import { TwitchEventSubPayload } from './api/interfaces/TwitchEventSubPayload';
 import { TwitchEventFactory } from './eventsub/twitch-event.factory';
 
@@ -30,8 +29,6 @@ export class TwitchController {
     private readonly logger = new Logger(TwitchController.name);
 
     constructor(
-        private readonly twitchService: TwitchService,
-        private readonly adapterHost: HttpAdapterHost,
         private readonly streamRepository: StreamEntityRepository,
         private readonly streamReadFactory: StreamReadFactory,
         private readonly vtuberRepository: VTuberEntityRepository,
@@ -43,7 +40,7 @@ export class TwitchController {
     async getLiveStreams(): Promise<Stream[]> {
         const streams = await this.streamRepository.findByQuery({
             platform: 'twitch',
-            status: VideoStatusEnum.Live,
+            status: VideoStatus.Live,
         });
         return streams.map((v) => this.streamReadFactory.createFromRoot(v));
     }
@@ -62,7 +59,7 @@ export class TwitchController {
 
         const stream = await this.streamRepository.findOneByQuery({
             channelId: vtuber.getTwitchId(),
-            status: VideoStatusEnum.Live,
+            status: VideoStatus.Live,
         });
 
         if (!stream) return { isLive: false };

@@ -12,14 +12,13 @@ import {
 } from '@nestjs/mongoose';
 import { YouTubeCommunityPostsService } from './youtube-community-posts.service';
 import { Connection } from 'mongoose';
-import { DynamicTimer } from '../../../common/util';
-import { VTuberEntityRepository } from '../../../core/vtubers/db/vtuber-entity.repository';
+import { DynamicTimer } from '../../../common';
+import { VTubersModule, VTuberEntityRepository } from '../../../core';
 import { YouTubeCommunityPostsController } from './youtube-community-posts.controller';
 import { CommunityPostFactory } from './communitypost.factory';
 import { CommunityPostEntityRepository } from './db/communitypost-entity.repository';
 import { CommunityPostSchemaFactory } from './db/communitypost-schema.factory';
 import { CommunityPostEventHandlers } from './events';
-import { VTubersModule } from '../../../core/vtubers/vtubers.module';
 import { CommunityPostSchema } from './db/communitypost.schema';
 import { CommunityPostReadRepository } from './db/communitypost-read.repository';
 import { CommunityPostResolver } from './communitypost.resolvers';

@@ -1,7 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { StreamsModule } from '../../../core/streams/streams.module';
+import { StreamsModule } from '../../../core';
 import { YouTubeAPIModule } from '../api/youtube-api.module';
 import { YouTubeEventSubFeedHandler } from './events/youtube-eventsub-feed.handler';
 import { YouTubeEventSubController } from './youtube-eventsub.controller';

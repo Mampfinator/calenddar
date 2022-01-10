@@ -3,11 +3,11 @@ import axios from 'axios';
 export type HTTPRequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
 export class RequestBuilder {
-    private headers: Record<string, string> = {};
-    private params: Record<string, string> = {};
-    private method: HTTPRequestMethod = 'GET';
-    private url: string;
-    private body: any;
+    protected headers: Record<string, string> = {};
+    protected params: Record<string, string> = {};
+    protected method: HTTPRequestMethod = 'GET';
+    protected url: string;
+    protected body: any;
 
     setMethod(method: HTTPRequestMethod) {
         this.method = method;

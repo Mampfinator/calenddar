@@ -18,7 +18,7 @@ export class VTuberSchemaFactory
             youtubeId: vtuber.getYoutubeId(),
             twitchId: vtuber.getTwitchId(),
             twitterId: vtuber.getTwitterId(),
-            twitcastingId: vtuber.getTwitcastingId()
+            twitcastingId: vtuber.getTwitcastingId(),
         };
     }
 
@@ -31,7 +31,7 @@ export class VTuberSchemaFactory
             vtuberSchema.youtubeId,
             vtuberSchema.twitchId,
             vtuberSchema.twitterId,
-            vtuberSchema.twitcastingId
+            vtuberSchema.twitcastingId,
         );
     }
 }

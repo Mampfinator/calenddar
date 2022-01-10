@@ -9,7 +9,7 @@ import {
     Post,
     UseInterceptors,
 } from '@nestjs/common';
-import { Protected } from '../../../common/decorators/protected-endpoint.decorator';
+import { Protected } from '../../../common';
 import { CommunityPostReadRepository } from './db/communitypost-read.repository';
 import { YouTubeScraper } from './scraping/YouTubeScraper';
 

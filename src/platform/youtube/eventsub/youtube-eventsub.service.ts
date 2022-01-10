@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { EventBus } from '@nestjs/cqrs';
 import { APIOptions } from '../../../core/config/config';
 import { OnEvent } from '@nestjs/event-emitter';
 import axios, { AxiosResponse } from 'axios';
@@ -25,13 +24,10 @@ export class YouTubeEventSubService {
     > = new Map();
     private readonly logger = new Logger(YouTubeEventSubService.name);
 
-    protected readonly _callbackUrl;
-    protected readonly hub = `https://pubsubhubbub.appspot.com/`;
+    private readonly _callbackUrl;
+    private readonly hub = `https://pubsubhubbub.appspot.com/`;
 
-    constructor(
-        private readonly configService: ConfigService,
-        private readonly eventBus: EventBus,
-    ) {
+    constructor(private readonly configService: ConfigService) {
         this._callbackUrl = `https://${
             this.configService.get<APIOptions>('api').host
         }/youtube/eventsub`;
@@ -43,7 +39,7 @@ export class YouTubeEventSubService {
     ): Promise<AxiosResponse> {
         const secret = this.configService.get<string>('YOUTUBE_WEBHOOK_SECRET');
         const topic = `https://www.youtube.com/xml/feeds/videos.xml?channel_id=${id}`;
-        const callbackUrl = this._callbackUrl; //+ encodeURIComponent(`&topic=${topic}&hub=${this.hub}`);
+        const callbackUrl = this._callbackUrl;
 
         return axios({
             method: 'POST',
@@ -79,12 +75,13 @@ export class YouTubeEventSubService {
         const [, id] = data.topic.split('=');
         const { lease } = data;
 
-        this.logger.debug(`Got subscribe event for: ${id}`);
+        this.logger.log(`Renewing YouTube PubSub lease for ${id}.`);
 
         this.subscriptionTimers.set(
             id,
             setTimeout(() => {
-                //this.subscribe(id);
+                // resubscribe once the current lease is about to expire
+                this.subscribe(id);
             }, Math.max(lease - 10000, 10000)),
         );
     }
@@ -92,7 +89,7 @@ export class YouTubeEventSubService {
     @OnEvent('youtube.eventsub.unsubscribe')
     private onUnsubscribe(data: IPubSubHubbubMessage) {
         const [, id] = data.topic.split('=');
-        this.logger.debug(`Got unsubscribe event for: ${id}`);
+        this.logger.log(`Unsubscribed from YouTube PubSub for ${id}.`);
 
         clearTimeout(this.subscriptionTimers.get(id));
         this.subscriptionTimers.delete(id);

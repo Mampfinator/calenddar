@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { StreamEntityRepository } from '../../core/streams/db/stream-entity.repository';
-import { GenericStream } from '../../core/streams/GenericStream';
-import { StreamFactory } from '../../core/streams/stream.factory';
-import { VideoStatusEnum } from '../../core/streams/stream.read';
+import {
+    VideoStatus,
+    StreamFactory,
+    StreamEntityRepository,
+    GenericStream,
+} from '../../core';
 import { HelixStream } from './api/interfaces/HelixStream';
 
 @Injectable()
@@ -19,7 +21,7 @@ export class TwitchStreamFactory {
             helixStream.user_id,
             'twitch',
             helixStream.title,
-            VideoStatusEnum.Live,
+            VideoStatus.Live,
         );
     }
 }

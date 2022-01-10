@@ -1,7 +1,6 @@
 import { forwardRef, Module, OnApplicationBootstrap } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
-import { StreamsModule } from '../../core/streams/streams.module';
-import { VTubersModule } from '../../core/vtubers/vtubers.module';
+import { StreamsModule, VTubersModule } from '../../core';
 import { TwitchEventHandlers } from './events';
 import { TwitchStreamFactory } from './twitch-stream.factory';
 import { TwitchController } from './twitch.controller';

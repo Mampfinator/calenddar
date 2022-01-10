@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { TwitterApiService } from './twitter-api.service';
 import { flatten, chunk } from 'ts-prime';
-import { VTuberEntityRepository } from '../../core/vtubers/db/vtuber-entity.repository';
+import { VTuberEntityRepository } from '../../core';
 
 @Injectable()
 export class TwitterService {
