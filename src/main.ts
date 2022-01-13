@@ -1,12 +1,13 @@
-import { WsAdapter } from '@nestjs/platform-ws';
+import './polyfill';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { WsAdapter } from '@nestjs/platform-ws';
 import { ConfigService } from '@nestjs/config';
-import { APIOptions } from './core/config/config';
 import { Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { AppModule } from './app.module';
+import { APIOptions } from './core';
 
 (async () => {
     const logger = new Logger(`Main`);

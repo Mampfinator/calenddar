@@ -1,4 +1,4 @@
-import { RequestBuilder } from '../../../common/util';
+import { RequestBuilder } from '../../../common';
 
 export class TwitcastingRequestBuilder extends RequestBuilder {
     setToken(token: string) {

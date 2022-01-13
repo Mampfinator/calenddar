@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { IEvent } from '@nestjs/cqrs';
 import { GenericStream, VideoStatus } from '../../core';
-import { YouTubeStreamOfflineEvent } from './events/youtube-stream-offline.event';
-import { YouTubeStreamLiveEvent } from './events/youtube-stream-live.event';
-import { YouTubeStreamReservationRemovedEvent } from './events/youtube-stream-reservation-removed.event';
-import { YouTubeStreamReservationMovedEvent } from './events/youtube-stream-reservation-moved.event';
+import {
+    YouTubeStreamLiveEvent,
+    YouTubeStreamOfflineEvent,
+    YouTubeStreamReservationMovedEvent,
+    YouTubeStreamReservationRemovedEvent,
+} from './events';
 
 @Injectable()
 export class YouTubeEventFactory {

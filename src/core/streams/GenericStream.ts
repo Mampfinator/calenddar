@@ -1,7 +1,6 @@
 import { AggregateRoot } from '@nestjs/cqrs';
 import { YouTubeV3Video } from '../../platform/youtube/api/interfaces/V3Video';
 import { VideoStatusEnum } from './stream.read';
-import { isValidDate } from '../../common/util';
 import { YouTubeAPIService } from '../../platform/youtube/api/youtube-api.service';
 
 export class GenericStream extends AggregateRoot {
@@ -73,6 +72,7 @@ export class GenericStream extends AggregateRoot {
             return updates;
         }
 
+        // TODO: make this less... jarring?
         const { status, title, description, scheduledFor } =
             YouTubeAPIService.prototype.extractInfoFromApiVideo(video);
 

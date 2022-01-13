@@ -1,4 +1,4 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { StreamsModule } from '../../../core';
@@ -12,6 +12,7 @@ import { YouTubeEventSubService } from './youtube-eventsub.service';
         CqrsModule,
         EventEmitterModule,
         YouTubeAPIModule,
+        // TODO: move actual hanndling logic to main module
         forwardRef(() => StreamsModule),
     ],
     providers: [YouTubeEventSubService, YouTubeEventSubFeedHandler],

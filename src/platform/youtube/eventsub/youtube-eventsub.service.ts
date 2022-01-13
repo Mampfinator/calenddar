@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { APIOptions } from '../../../core/config/config';
 import { OnEvent } from '@nestjs/event-emitter';
+import { APIOptions } from '../../../core';
 import axios, { AxiosResponse } from 'axios';
 
 interface IPubSubHubbubMessage {

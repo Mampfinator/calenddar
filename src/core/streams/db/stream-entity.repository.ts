@@ -1,10 +1,10 @@
+import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { BaseEntityRepository } from '../../database/base-entity.repository';
+import { BaseEntityRepository } from '../../database';
 import { GenericStream } from '../GenericStream';
 import { StreamSchemaFactory } from './stream-schema.factory';
 import { StreamSchema } from './stream.schema';
-import { Model } from 'mongoose';
 import { VideoStatusEnum } from '../stream.read';
 
 @Injectable()

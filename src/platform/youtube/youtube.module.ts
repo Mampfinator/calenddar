@@ -1,21 +1,25 @@
-import { Module, Logger, OnApplicationShutdown } from '@nestjs/common';
+import {
+    Module,
+    Logger,
+    OnApplicationShutdown,
+    forwardRef,
+} from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
+import { ConfigService } from '@nestjs/config';
 import { DynamicTimer } from '../../common';
-import { StreamsModule, VTubersModule } from '../../core';
+import { StreamsModule, VTubersModule, YouTubeOptions } from '../../core';
 import { YouTubeAPIModule } from './api/youtube-api.module';
 import { YouTubeEventSubModule } from './eventsub/youtube-eventsub.module';
 import { YouTubeEventSubService } from './eventsub/youtube-eventsub.service';
 import { YouTubeController } from './youtube.controller';
 import { YouTubeService } from './youtube.service';
-import { ConfigService } from '@nestjs/config';
-import { YouTubeOptions } from 'src/core/config/config';
 import { YouTubeEventFactory } from './youtube-event.factory';
 import { YouTubeCommunityPostsModule } from './community-posts/youtube-community-posts.module';
 @Module({
     imports: [
         CqrsModule,
-        VTubersModule,
-        StreamsModule,
+        forwardRef(() => VTubersModule),
+        forwardRef(() => StreamsModule),
         YouTubeAPIModule,
         YouTubeEventSubModule,
         YouTubeCommunityPostsModule,

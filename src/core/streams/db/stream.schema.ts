@@ -1,5 +1,5 @@
 import { Prop, Schema } from '@nestjs/mongoose';
-import { IdentifiableEntitySchema } from '../../database/identifiable-entity.schema';
+import { IdentifiableEntitySchema } from '../../database';
 
 @Schema({ versionKey: false, collection: 'streams' })
 export class StreamSchema extends IdentifiableEntitySchema {

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
 
-import { EntitySchemaFactory } from '../../database/entity-schema.factory';
+import { EntitySchemaFactory } from '../../database';
 import { StreamSchema } from './stream.schema';
 
 import { GenericStream } from '../GenericStream';
